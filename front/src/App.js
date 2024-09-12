@@ -1,17 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
+import ModalFrame from './components/ModalFrame';
+import LoginModal from './components/LoginModal';
 
 function App() {
 
-  const [data, setData] = useState("");
+  const [isModalOpen, setModalOpen] = useState(false);
 
+  //페이지 진입 시 로그인 모달 바로 열리게 
+  useEffect(() => {
+      setModalOpen(true);
+  }, []);
 
+  const handleModal = () => {
+      setModalOpen(false);
+  };
 
-  return (
-    <div className="text-4xl m-2 bg-slate-500 font-serif">
-      {data}
-    </div>
+  return(
+      <div>
+          {isModalOpen && <LoginModal handleModal={handleModal}></LoginModal>}
+      </div>
   );
 }
 
