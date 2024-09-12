@@ -1,6 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
+import Header from './components/header/header';
+import { Route, BrowserRouter as Router, Routes} from 'react-router-dom';
+import ProjectPage from './Pages/project/project_page';
 import ModalFrame from './components/ModalFrame';
 import LoginModal from './components/LoginModal';
 
@@ -18,9 +21,16 @@ function App() {
   };
 
   return(
-      <div>
-          {isModalOpen && <LoginModal handleModal={handleModal}></LoginModal>}
+    <div className="box-border">
+      <Header />
+      <div className="pt-14">
+        <Routes>
+          <Route path='/' element={<ProjectPage/>} />
+        </Routes>
       </div>
+      {isModalOpen && <LoginModal handleModal={handleModal}></LoginModal>}
+    </div> 
+ 
   );
 }
 
