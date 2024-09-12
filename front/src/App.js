@@ -29,7 +29,7 @@ function App() {
   }, []);  // 의존성 배열을 추가하여 컴포넌트가 마운트될 때 한 번만 실행
 
   return (
-    <div className="App">
+    <div className="text-4xl m-2 bg-slate-500 font-serif">
       {data}
     </div>
   );
