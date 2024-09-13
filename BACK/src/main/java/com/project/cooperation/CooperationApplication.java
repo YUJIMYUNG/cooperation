@@ -1,4 +1,4 @@
-package com.proejct.cooperation;
+package com.project.cooperation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

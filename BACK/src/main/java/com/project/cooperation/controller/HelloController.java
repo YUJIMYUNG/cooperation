@@ -1,4 +1,4 @@
-package com.proejct.cooperation.controller;
+package com.project.cooperation.controller;
 
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;

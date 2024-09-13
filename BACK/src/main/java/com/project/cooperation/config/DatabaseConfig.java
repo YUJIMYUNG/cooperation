@@ -1,4 +1,4 @@
-package com.proejct.cooperation.config;
+package com.project.cooperation.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

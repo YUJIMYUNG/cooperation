@@ -1,4 +1,4 @@
-package com.proejct.cooperation.config;
+package com.project.cooperation.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

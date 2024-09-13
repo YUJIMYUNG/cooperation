@@ -1,4 +1,4 @@
-package com.proejct.cooperation.config;
+package com.project.cooperation.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;

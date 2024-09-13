@@ -1,4 +1,4 @@
-package com.proejct.cooperation.config;
+package com.project.cooperation.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

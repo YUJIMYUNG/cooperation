@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = ({widthSize, placeholder}) => {
+const Input = ({widthSize, placeholder,onChange}) => {
     // 5열은 기본적으로 설정 되는 스타일들
     const inputClasses = `
     h-10 border rounded-md m-4 shadow-sm
@@ -12,7 +12,7 @@ const Input = ({widthSize, placeholder}) => {
 
     return (
         <div>
-            <input className={inputClasses} placeholder={placeholder}></input>
+            <input className={inputClasses} placeholder={placeholder} onChange={onChange}></input>
         </div>
     );
 };
