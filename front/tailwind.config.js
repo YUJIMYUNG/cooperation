@@ -13,7 +13,10 @@ module.exports = {
         '600' : '600px',
         '800' : '800px',
         '100' : "100px",
-      }
+      },
+      fontFamily:{
+        'nanum-square' : ['NanumSquare', 'sans-serif'],
+      },
     },
     
   },

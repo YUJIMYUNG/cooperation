@@ -23,6 +23,7 @@ function App() {
 
   return(
     <div className="box-border">
+      {isModalOpen && <LoginModal handleModal={handleModal}></LoginModal>}
       <Header />
       <div className="pt-14">
         <Routes>
@@ -30,7 +31,7 @@ function App() {
           <Route path="/create-project" element={<CreateProjectPage/>} /> 
         </Routes>
       </div>
-      {isModalOpen && <LoginModal handleModal={handleModal}></LoginModal>}
+      
     </div> 
  
   );
