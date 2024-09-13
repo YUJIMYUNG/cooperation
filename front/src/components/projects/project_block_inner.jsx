@@ -2,7 +2,7 @@ import React from 'react';
 
 const ProjectBlockInner = ({name, member, description, startDate, endDate, extraAction}) => {
     const clickHandler = () => {
-
+        
     }
 
     return (
@@ -13,7 +13,7 @@ const ProjectBlockInner = ({name, member, description, startDate, endDate, extra
             <p className="col-span-2">{startDate}</p>
             <p className="col-span-2">{endDate}</p>
             <div className='flex items-center justify-center'>
-                <p className="col-span-1 font-bold text-3xl cursor-pointer w-fit" onClick={clickHandler()}>&#8942;</p>
+                <p className="col-span-1 font-bold text-3xl cursor-pointer w-fit relative" onClick={clickHandler()}>&#8942;</p>
             </div>
         </div>
     );
