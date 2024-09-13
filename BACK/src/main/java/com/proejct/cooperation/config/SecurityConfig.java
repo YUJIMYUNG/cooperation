@@ -31,8 +31,8 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeReqeust ->
                         authorizeReqeust
-                                .requestMatchers("/api/projects/**", "/api/user/**").authenticated()//인증 된 사용자는 projects, user 에 접근 가능
-                                .requestMatchers("/api/auth/**").permitAll()//모든 사용자가 접근 가능
+                                .requestMatchers( "/api/user/**").authenticated()//인증 된 사용자는 projects, user 에 접근 가능
+                                .requestMatchers("/api/projects/**","/api/auth/**").permitAll()//모든 사용자가 접근 가능
                         )
                 .headers(
                         headersConfigurer ->

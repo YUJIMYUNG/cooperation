@@ -10,7 +10,7 @@
     "show": 495,
     "database": 4,
     "databaseName": "",
-    "canvasType": "@dineug/erd-editor/builtin-schema-sql",
+    "canvasType": "ERD",
     "language": 1,
     "tableNameCase": 4,
     "columnNameCase": 2,
@@ -56,7 +56,8 @@
           "JXckrsMOkBombpaa_GwhB",
           "PCZqar42anFriH5XFmbkb",
           "mgSuUEQclsruBwL_L89CL",
-          "yP87-WKRP07tZ4PFPkTGc"
+          "yP87-WKRP07tZ4PFPkTGc",
+          "JI6BXyyzZCRvCsURa8E5R"
         ],
         "seqColumnIds": [
           "S6AsIgU-ZWdmSvAq4evps",
@@ -68,7 +69,8 @@
           "yP87-WKRP07tZ4PFPkTGc",
           "RiMWQPgE4IqQhzg-O3fo9",
           "BLbMZgaFlMQJeErFZkMjC",
-          "ChRylztzBzodlBgigjoKU"
+          "ChRylztzBzodlBgigjoKU",
+          "JI6BXyyzZCRvCsURa8E5R"
         ],
         "ui": {
           "x": 293,
@@ -79,7 +81,7 @@
           "color": ""
         },
         "meta": {
-          "updateAt": 1726134734277,
+          "updateAt": 1726196755813,
           "createAt": 1725002413595
         }
       },
@@ -784,6 +786,26 @@
           "updateAt": 1726134732730,
           "createAt": 1726134732730
         }
+      },
+      "JI6BXyyzZCRvCsURa8E5R": {
+        "id": "JI6BXyyzZCRvCsURa8E5R",
+        "tableId": "X9869hdkufjBLsZ7NvUlY",
+        "name": "role",
+        "comment": "",
+        "dataType": "VARCHAR",
+        "default": "",
+        "options": 8,
+        "ui": {
+          "keys": 0,
+          "widthName": 60,
+          "widthComment": 60,
+          "widthDataType": 60,
+          "widthDefault": 60
+        },
+        "meta": {
+          "updateAt": 1726196770208,
+          "createAt": 1726196755812
+        }
       }
     },
     "relationshipEntities": {
@@ -798,7 +820,7 @@
             "DdAjToahROCE5UxjVO2_p"
           ],
           "x": 532,
-          "y": 300,
+          "y": 324,
           "direction": 8
         },
         "end": {
@@ -854,7 +876,7 @@
             "DdAjToahROCE5UxjVO2_p"
           ],
           "x": 771,
-          "y": 212,
+          "y": 224,
           "direction": 2
         },
         "end": {
@@ -1285,6 +1307,16 @@
       1726134732729,
       1726134734276,
       {}
+    ],
+    "JI6BXyyzZCRvCsURa8E5R": [
+      "tableColumnEntities",
+      1726196755810,
+      -1,
+      {
+        "name": 1726196758161,
+        "dataType": 1726196761670,
+        "options(notNull)": 1726196770208
+      }
     ]
   }
 }

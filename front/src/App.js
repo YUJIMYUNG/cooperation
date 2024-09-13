@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Routes} from 'react-router-dom';
 import ProjectPage from './Pages/project/project_page';
 import ModalFrame from './components/ModalFrame';
 import LoginModal from './components/LoginModal';
+import CreateProjectPage from './Pages/project/create_project_page';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
       <div className="pt-14">
         <Routes>
           <Route path='/' element={<ProjectPage/>} />
+          <Route path="/create-project" element={<CreateProjectPage/>} /> 
         </Routes>
       </div>
       {isModalOpen && <LoginModal handleModal={handleModal}></LoginModal>}
