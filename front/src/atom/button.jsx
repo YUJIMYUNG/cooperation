@@ -3,7 +3,7 @@ import React from 'react';
 const Button = ({text, color, onClickHandler, type}) => {
 
     const buttonClasses = `
-        px-4 py-2 rounded-lg border cursor-pointer font-nanum-squareL text-sm
+        px-2 py-2 h-10 rounded-lg border cursor-pointer font-nanum-squareL text-sm 
         ${color === 'yellow' ? 'bg-yellow-400 text-white border-yellow-400 hover:bg-yellow-500 hover:border-yellow-500' : ''}
         ${color === 'red' ? 'bg-red-600 text-white border-red' : ''}
         ${color === 'white' ? 'bg-white border-none text-black' : ''}
@@ -13,7 +13,7 @@ const Button = ({text, color, onClickHandler, type}) => {
     return (
         <button type={type} className={buttonClasses} onClick={onClickHandler}>
            {text}
-           <div className='hover:'></div>
+           <div className=''></div>
         </button>
     );
 };

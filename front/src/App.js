@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Header from './components/header/header';
 import { Route, BrowserRouter as Router, Routes} from 'react-router-dom';
 import ProjectPage from './Pages/project/project_page';
-import ModalFrame from './components/auth/ModalFrame';
 import LoginModal from './components/auth/LoginModal';
 import CreateProjectPage from './Pages/project/create_project_page';
 import RegisterModal from './components/auth/registerModal';
@@ -35,7 +34,7 @@ function App() {
   };
 
   //findIdPswModal으로 전환
-  const switchToFindIdPsw = () => {
+  const switchToFindIdPwd = () => {
     setModalType("findIdPsw");
   };
 
