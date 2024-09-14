@@ -1,11 +1,13 @@
 import React from 'react';
-import DatePicker from 'tailwind-datepicker-react';
 import DatePickerAtom from '../../atom/datePicker';
+import { pl } from 'date-fns/locale';
+import Label from '../../atom/label';
 
-const DatePickerModules = ({date, onChange}) => {
+const DatePickerModules = ({id, content, placeholder, date, onChange}) => {
     return (
         <div>
-            <DatePickerAtom />
+            <Label content={content} id={id} />
+            <DatePickerAtom date={date} onChange={onChange} placeholder={placeholder}/>
         </div>
 
 

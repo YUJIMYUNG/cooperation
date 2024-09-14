@@ -1,60 +1,27 @@
 import React, { useState } from 'react';
-import DatePicker from 'tailwind-datepicker-react';
-
-const options = {
-	title: "Demo Title",
-	autoHide: true,
-	todayBtn: false,
-	clearBtn: true,
-	clearBtnText: "Clear",
-	maxDate: new Date("2030-01-01"),
-	minDate: new Date("1950-01-01"),
-	theme: {
-		background: "bg-gray-700 dark:bg-gray-800",
-		todayBtn: "",
-		clearBtn: "",
-		icons: "",
-		text: "",
-		disabledText: "bg-red-500",
-		input: "",
-		inputIcon: "",
-		selected: "",
-	},
-	icons: {
-		// () => ReactElement | JSX.Element
-		prev: () => <span>Previous</span>,
-		next: () => <span>Next</span>,
-	},
-	datepickerClassNames: "top-12",
-	defaultDate: new Date("2022-01-01"),
-	language: "en",
-	disabledDates: [],
-	weekDays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-	inputNameProp: "date",
-	inputIdProp: "date",
-	inputPlaceholderProp: "Select Date",
-	inputDateFormatProp: {
-		day: "numeric",
-		month: "long",
-		year: "numeric"
-	}
-}
 
 
-const DatePickerAtom = () => {
-	const [show, setShow] = useState(false)
-	const handleChange = (selectedDate) => {
-		console.log(selectedDate)
-	}
-	const handleClose = (state) => {
-		setShow(state)
-	}
+const DatePickerAtom = ({date, onChange, placeholder}) => {
+
+	const handleDateChange = (e) => {
+		const newDate = new Date(e.target.value);
+		onChange(newDate);
+	  };
 
 	return (
-		<div>
-			<DatePicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+	  <div className="relative max-w-sm font-nanum-squareB">
+		<input
+		  type="date"
+		  value={date.toISOString().split('T')[0]}
+		  onChange={handleDateChange}
+		  className="bg-white border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-300 pl-1 p-2.5"
+		  placeholder={placeholder}
+		/>
+		<div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+		 
 		</div>
-	)
+	  </div>
+	);
 };
 
 export default DatePickerAtom;
