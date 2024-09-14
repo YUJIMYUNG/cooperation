@@ -39,7 +39,7 @@ function App() {
   };
 
   return(
-    <div className="box-border">
+    <div className="box-border font-nanum-squareB">
       {isModalOpen && (
         //modatType에 따른 렌더링. 삼항연산자 헷갈리지 말기. 아이디비번찾기 할 때 코드 추가해야 함 
           modalType === "login"
@@ -47,7 +47,7 @@ function App() {
           :  <RegisterModal handleModal={handleModal} switchToLogin={switchToLogin} />
       )} 
       <Header />
-      <div className="pt-14">
+      <div className="pt-14 ">
         <Routes>
           <Route path='/' element={<ProjectPage/>} />
           <Route path="/create-project" element={<CreateProjectPage/>} /> 

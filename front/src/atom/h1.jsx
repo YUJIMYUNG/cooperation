@@ -2,7 +2,7 @@ import React from 'react';
 
 const H1 = ({title}) => {
     return (
-        <h1 className="text-4xl font-bold">{title}</h1>
+        <h1 className="text-4xl font-bold font-nanum-squareB">{title}</h1>
     );
 };
 
