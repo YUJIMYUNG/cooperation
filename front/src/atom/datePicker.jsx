@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Datepicker from "tailwind-datepicker-react"
+import DatePicker from 'tailwind-datepicker-react';
 
 const options = {
 	title: "Demo Title",
@@ -52,7 +52,7 @@ const DatePickerAtom = () => {
 
 	return (
 		<div>
-			<Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+			<DatePicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
 		</div>
 	)
 };
