@@ -16,7 +16,8 @@ module.exports = {
         '100' : "100px",
       },
       fontFamily:{
-        'nanum-square' : ['NanumSquare', 'sans-serif'],
+        'nanum-squareB' : ['NanumSquareB', 'sans-serif'],
+        'nanum-squareL' : ['NanumSquareL', 'sans-serif'],
       },
     },
     

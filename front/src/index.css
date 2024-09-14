@@ -8,3 +8,10 @@
     font-style: normal;
     font-display: swap;
 }
+@font-face {
+    font-family: 'NanumSquare';
+    src: url('../public/util/NanumSquareL.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}

@@ -1,15 +1,12 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import ModalFrame from "./ModalFrame";
-import Input from "../atom/Input";
-import AuthSection from "../atom/AuthSection";
-import Button from "../atom/button";
+import Input from "../../atom/Input";
+import AuthSection from "../../atom/AuthSection";
+import Button from "../../atom/button";
 
 
-const LoginModal = ({handleModal}) => {
-
-    const onClickHandler = () =>{ 
-        
-    }
+//로그인 모달창
+const LoginModal = ({switchToRegister, handleModal}) => {
     
     return (
         //handleModal -> App.js에 명시해놓은 setModalOpen(false)값을 갖다 씀
@@ -17,7 +14,7 @@ const LoginModal = ({handleModal}) => {
             <AuthSection>
                 <div className="h-32 align-middle flex flex-col items-center justify-center gap-3">
                     <p>LOGO</p>
-                    <h2 className="text-yellow-400 font-nanum-square">로그인</h2>
+                    <h2 className="text-yellow-400 font-nanum-squareB">로그인</h2>
                 </div>
                 <div>
                     <Input placeholder={"아이디를 입력하세요."} ></Input>
@@ -27,7 +24,7 @@ const LoginModal = ({handleModal}) => {
                     <Button color={"yellow"} onClickHandler={handleModal} text={"로그인"} type={"button"} />
                 </div>
                 <div className="m-6 border-t-2 p-10">
-                    <Button color={""} onClickHandler={null} text={"회원가입"} type={"button"} />
+                    <Button color={""} onClickHandler={switchToRegister} text={"회원가입"} type={"button"} />
                     <Button color={""} onClickHandler={null} text={"아이디 / 비밀번호 찾기"} type={"button"} />
                 </div>
             </AuthSection>
