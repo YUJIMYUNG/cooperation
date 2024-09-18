@@ -3,7 +3,7 @@ import Button from '../../atom/button';
 
 const ModalBottom = ({children}) => {
     return (
-        <div className="h-140 m-4 border-t-2 p-6 flex">
+        <div className="h-100 m-4 border-t-2 p-4 flex justify-center">
 
             {children}
 
