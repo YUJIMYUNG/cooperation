@@ -6,11 +6,11 @@ import { createProject, updateProject } from '../../store/projectSlice';
 import Button from '../../atom/button';
 import InputModules from '../../components/modules/inputModules';
 import DatePickerModules from '../../components/modules/datePickerModules';
-import ProjectHeader from '../../components/projects/projectHeader';
+import BodyHeader from "../../components/header/bodyHeader";
 
 export default function ProjectForm() {
-    const { id } = useParams(); // URL에서 프로젝트 ID를 가져옵니다.
-    const project = useSelector(state => state.projects.list.find(p => p.idx.toString() === id));
+    const { idx } = useParams(); // URL에서 프로젝트 ID를 가져옵니다.
+    const project = useSelector(state => state.projects.list.find(p => p.idx.toString() === idx));
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -24,8 +24,9 @@ export default function ProjectForm() {
     });
 
     useEffect(() => {
-        if (id && project) {
+        if (idx && project) {
             setFormData({
+                idx : idx || '',
                 title: project.title || '',
                 description: project.description || '',
                 creator: project.creator || '',
@@ -33,16 +34,16 @@ export default function ProjectForm() {
                 endDate: project.endDate ? new Date(project.endDate) : new Date()
             });
         }
-    }, [id, project]);
+    }, [idx, project]);
 
 
     const handleInputChange = (e) => {
-        const { id, value } = e.target;
-        setFormData(prev => ({ ...prev, [id]: value }));
+        const { idx, value } = e.target;
+        setFormData(prev => ({ ...prev, [idx]: value }));
     };
 
-    const handleDateChange = (id, date) => {
-        setFormData(prev => ({ ...prev, [id]: date }));
+    const handleDateChange = (idx, date) => {
+        setFormData(prev => ({ ...prev, [idx]: date }));
     };
 
     const handleSubmit = (e) => {
@@ -57,8 +58,8 @@ export default function ProjectForm() {
 
     return (
         <div className="w-11/12 mx-auto">
-            <ProjectHeader title={id ? "프로젝트 수정" : "프로젝트 생성"} />
-            <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto mt-10 flex flex-col justify-center items-center gap-4">
+            <BodyHeader title={idx ? "프로젝트 수정" : "프로젝트 생성"} />
+            <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto flex flex-col justify-center items-center gap-4">
                 <div className="mb-4 flex flex-col gap-4">
                     <InputModules id={"title"} content={"프로젝트 명"} widthSize={"300"} placeholder={"프로젝트 명을 입력하세요."} onChange={handleInputChange} value={formData.title}/>
                     <InputModules id={"description"} content={"프로젝트 설명"} widthSize={"300"} placeholder={"프로젝트 설명을 입력하세요."} onChange={handleInputChange} value={formData.description}/>
@@ -67,7 +68,7 @@ export default function ProjectForm() {
                 </div>
                 {/* 다른 필드들도 위와 같은 방식으로 추가 */}
                 <div className="flex items-center justify-between">
-                    <Button text={id ? "프로젝트 수정" : "프로젝트 생성"} color="yellow" type="submit" />
+                    <Button text={idx ? "프로젝트 수정" : "프로젝트 생성"} color="yellow" type="submit" />
                 </div>
             </form>
         </div>

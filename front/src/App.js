@@ -6,6 +6,7 @@ import ProjectPage from './Pages/project/projectPage';
 import LoginModal from './components/auth/LoginModal';
 import RegisterModal from './components/auth/registerModal';
 import ProjectForm from './Pages/project/projectForm';
+import Tasks from './Pages/tasks/tasks';
 
 function App() {
 
@@ -50,7 +51,8 @@ function App() {
         <Routes>
           <Route path='/' element={<ProjectPage/>} />
           <Route path="/create-project" element={<ProjectForm />} /> 
-          <Route path="/edit-project/:id" element={<ProjectForm />} />
+          <Route path="/edit-project/:idx" element={<ProjectForm />} />
+          <Route path="/project/:idx/tasks" element={<Tasks />} />
         </Routes>
       </div>
       

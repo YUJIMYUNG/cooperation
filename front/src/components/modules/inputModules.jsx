@@ -6,7 +6,7 @@ const InputModules = ({id, content, widthSize, placeholder, onChange, value}) =>
     return (
         <div>
             <Label content={content} id={id} />
-            <Input widthSize={widthSize} placeholder={placeholder} onChange={onChange} value={value}/> 
+            <Input widthSize={widthSize} placeholder={placeholder} onChange={onChange} id={id} value={value}/> 
         </div>
     );
 };
