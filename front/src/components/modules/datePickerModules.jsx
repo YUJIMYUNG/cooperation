@@ -7,7 +7,7 @@ const DatePickerModules = ({id, content, placeholder, date, onChange}) => {
     return (
         <div>
             <Label content={content} id={id} />
-            <DatePickerAtom date={date} onChange={onChange} placeholder={placeholder}/>
+            <DatePickerAtom id={id} date={date} onChange={onChange} placeholder={placeholder}/>
         </div>
 
 

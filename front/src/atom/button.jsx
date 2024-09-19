@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Button = ({text, color, onClickHandler, type}) => {
+const Button = ({text, color, onClickHandler = null, type}) => {
 
     const buttonClasses = `
         px-2 py-2 h-10 rounded-lg border cursor-pointer font-nanum-squareL text-sm 
@@ -13,7 +13,6 @@ const Button = ({text, color, onClickHandler, type}) => {
     return (
         <button type={type} className={buttonClasses} onClick={onClickHandler}>
            {text}
-           <div className=''></div>
         </button>
     );
 };

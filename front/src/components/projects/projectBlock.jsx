@@ -45,7 +45,6 @@ export default function ProjectBlock({ idx, title, creator, description, startDa
                 <button 
                     className="block w-full text-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => {
-                        console.log('수정 clicked for', title);
                         setIsDropdownOpen(false);
                         onEdit();
                     }}

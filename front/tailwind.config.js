@@ -22,6 +22,55 @@ module.exports = {
     },
     
   },
-  plugins: [],
+  plugins: [
+    function({ addComponents }) {
+      addComponents({
+        '.thead-border': {
+          '&::before': {
+            content: "''",
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            top: '0',
+            height: '0.5px',
+            backgroundColor: '#d1d5db',
+            zIndex: '30',
+          },
+          '&::after': {
+            content: "''",
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            height: '0.5px',
+            backgroundColor: '#d1d5db',
+            zIndex: '30',
+          },
+        },
+        '.th-border': {
+          '&::before': {
+            content: "''",
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            left: '0',
+            width: '0.5px',
+            backgroundColor: '#d1d5db',
+            zIndex: '30',
+          },
+          '&:last-child::after': {
+            content: "''",
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            width: '0.5px',
+            backgroundColor: '#d1d5db',
+            zIndex: '30',
+          },
+        },
+      })
+    },
+  ],
 }
 

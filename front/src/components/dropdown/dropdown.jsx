@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const Dropdown = ({ isOpen, onClose, children }) => {
+const Dropdown = ({ isOpen = null, onClose = null, children }) => {
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const Dropdown = ({ isOpen, onClose, children }) => {
 
     if (!isOpen) return null;
 
-    return (
+    return (    
         <div 
             ref={dropdownRef}
             className="absolute right-10 top-11 mt-2 w-24 bg-white rounded-md shadow-lg z-10"
