@@ -1,12 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
 import Header from './components/header/header';
 import { Route, BrowserRouter as Router, Routes} from 'react-router-dom';
-import ProjectPage from './Pages/project/project_page';
+import ProjectPage from './Pages/project/projectPage';
 import LoginModal from './components/auth/LoginModal';
-import CreateProjectPage from './Pages/project/create_project_page';
 import RegisterModal from './components/auth/registerModal';
+import ProjectForm from './Pages/project/projectForm';
 
 function App() {
 
@@ -50,7 +49,8 @@ function App() {
       <div className="pt-14 ">
         <Routes>
           <Route path='/' element={<ProjectPage/>} />
-          <Route path="/create-project" element={<CreateProjectPage/>} /> 
+          <Route path="/create-project" element={<ProjectForm />} /> 
+          <Route path="/edit-project/:id" element={<ProjectForm />} />
         </Routes>
       </div>
       
