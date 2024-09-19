@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Input = ({widthSize,placeholder,onChange, value, type, id}) => {
+const Input = ({widthSize,placeholder,onChange, value, type, id,onBlur}) => {
 
     // 5열은 기본적으로 설정 되는 스타일들
     const inputClasses = `
@@ -15,7 +15,7 @@ const Input = ({widthSize,placeholder,onChange, value, type, id}) => {
 
     return (
         <div>
-            <input className={inputClasses} placeholder={placeholder} onChange={onChange} value={value} type={type} id={id}></input>
+            <input className={inputClasses} placeholder={placeholder} onChange={onChange} value={value} type={type} id={id} onBlur={onBlur}></input>
         </div>
     );
 };

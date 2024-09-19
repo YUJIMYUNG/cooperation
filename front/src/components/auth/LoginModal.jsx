@@ -31,7 +31,7 @@ const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal}) => {
 
     //로그인, 비밀번호 유효성 검사 
     const handleLogin = () => {
-        if(!userId && !userPassword) { //아이디에 값이 없거나, 비밀번호에 값이 없거나
+        if(!userId || !userPassword) { //아이디에 값이 없거나, 비밀번호에 값이 없거나
             setErrorMessage("아이디 혹은 비밀번호를 입력해주세요.");
             return;
         }
@@ -62,21 +62,25 @@ const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal}) => {
                     
                     {/* modal body section */}
                     <ModalBody>
+                        {/* 로그인 input, errorMessage 영역 */}
+                        <div className="w-400 h-48">
                             {/* 아이디, 비밀번호, input 영역 */}
-                            <div className="grid gap-6 m-5 pb-10">
+                            <div className="grid gap-6">
                                 <Input placeholder={"아이디를 입력하세요."} value={userId} onChange={handleUserIdChange}></Input>
                                 <Input placeholder={"비밀번호를 입력하세요."} value={userPassword} onChange={hadleUserPwdChange} type="password"></Input>
                             </div>
                             {/* 오류메세지 */}
-                            <div>
+                            <div className="pt-2 pl-1">
                                 {errorMessage &&(
-                                    <p className="font-nanum-squareL text-sm text-red-600">{errorMessage}</p>
+                                    <p className="font-nanum-squareL text-xs text-red-600">{errorMessage}</p>
                                 )}
                             </div>
-                            {/* 로그인 버튼 */}
-                            <div>
-                                <Button color={"yellow"} onClickHandler={handleLogin} text={"로그인"} type={"button"} />
-                            </div>
+                        </div>
+
+                        {/* 로그인 버튼 */}
+                        <div>
+                            <Button color={"yellow"} onClickHandler={handleLogin} text={"로그인"} type={"button"} />
+                        </div>
                     </ModalBody>
 
                     {/* modal bottom section */}

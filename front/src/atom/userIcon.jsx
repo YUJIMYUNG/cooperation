@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UserIcon = ({ size = 'md', color = 'gray',nickname ='User' }) => {
+const UserIcon = ({ size = 'md', color = 'gray',nickname ='User', onclick = null}) => {
 
     const truncatedNickname = nickname.slice(0, 4);
     
@@ -24,7 +24,7 @@ const UserIcon = ({ size = 'md', color = 'gray',nickname ='User' }) => {
     };
 
     return (
-        <div className={`rounded-full flex items-center justify-center ${sizeClasses[size]} ${colorClasses[color]}`}>
+        <div className={`rounded-full flex items-center justify-center ${sizeClasses[size]} ${colorClasses[color]}`} onclick={onclick}>
             <span className="font-bold">{truncatedNickname}</span>
         </div>
     );
