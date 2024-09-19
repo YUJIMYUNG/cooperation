@@ -1,13 +1,13 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
 import Header from './components/header/header';
 import { Route, BrowserRouter as Router, Routes} from 'react-router-dom';
-import ProjectPage from './Pages/project/project_page';
+import ProjectPage from './Pages/project/projectPage';
 import LoginModal from './components/auth/LoginModal';
-import CreateProjectPage from './Pages/project/create_project_page';
 import RegisterModal from './components/auth/registerModal';
 import FindIdPwdModal from './components/auth/findIdPwdModal';
+import ProjectForm from './Pages/project/projectForm';
+import Tasks from './Pages/tasks/tasks';
 
 function App() {
 
@@ -64,7 +64,9 @@ function App() {
       <div className="pt-14 ">
         <Routes>
           <Route path='/' element={<ProjectPage/>} />
-          <Route path="/create-project" element={<CreateProjectPage/>} /> 
+          <Route path="/create-project" element={<ProjectForm />} /> 
+          <Route path="/edit-project/:idx" element={<ProjectForm />} />
+          <Route path="/project/:idx/tasks" element={<Tasks />} />
         </Routes>
       </div>
       
