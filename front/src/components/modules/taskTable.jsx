@@ -1,88 +1,108 @@
 import React, { useState } from 'react';
 import Dropdown from '../dropdown/dropdown';
+import StatusBadge from '../../atom/statusBadge';
 
-const TaskTable = ({task, onEdit, onDelete}) => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    console.log(task);
-
-    const toggleDropdown = (e) => {
+const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSelectedTasks, handleSelectAll, handleSelectTask}) => {
+    const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+    
+    // :버튼을 눌렀을 때 해당하는 놈의 드롭 박스 나타나기
+    const toggleDropdown = (e, idx) => {
         e.stopPropagation();
-        setIsDropdownOpen(!isDropdownOpen);
+        setOpenDropdownIndex(openDropdownIndex === idx ? null : idx);
     };
 
-    const handleDeleteClick = () => {
-        setIsDropdownOpen(false);
-        setIsDeleteModalOpen(true);
+    // 수정하기 버튼을 눌렀을 때 작동하는 함수
+    const handleEditClick = (taskIdx) => {
+        setOpenDropdownIndex(null);
+        onEdit(taskIdx);
+    };
+    
+    //삭제 버튼을 눌렀을 때 작동하는 함수
+    const handleDeleteClick = (taskIdx) => {
+        setOpenDropdownIndex(null);
+        onDelete(taskIdx);
     };
 
-    const handleDeleteConfirm = () => {
-        setIsDeleteModalOpen(false);
-        onDelete();
+    // 각각의 체크박스를 눌렀을 때 작동
+    const handleCheckboxChange = (e, taskIdx) => {
+        e.stopPropagation(); // 이벤트 전파 중지
+        handleSelectTask(taskIdx);
     };
+
+    const isAllSelected = task.length > 0 && task.every(t => selectedTasks[t.taskIdx]);
 
     return (
         <section className='w-full mt-5'>
-            <table className="w-full border-collapse">
-                <colgroup>
-                    <col style={{width: '5%'}} />   {/* 체크박스 */}
-                    <col style={{width: '20%'}} />  {/* 작업명 */}
-                    <col style={{width: '10%'}} />  {/* 담당자 */}
-                    <col style={{width: '10%'}} />  {/* 상태 */}
-                    <col style={{width: '10%'}} />  {/* 우선순위 */}
-                    <col style={{width: '10%'}} />  {/* 시작날짜 */}
-                    <col style={{width: '10%'}} />  {/* 마감날짜 */}
-                    <col style={{width: '20%'}} />  {/* 설명 */}
-                    <col style={{width: '5%'}} />   {/* ... 버튼 */}
-                </colgroup>
-                <thead>
-                    <tr className="bg-white text-base" >
-                        <th className="p-2 border text-sm text-gray-500">
-                            <input type="checkbox" />
-                        </th>
-                        <th className="p-2 border text-sm text-gray-500">작업명</th>
-                        <th className="p-2 border text-sm text-gray-500">담당자</th>
-                        <th className="p-2 border text-sm text-gray-500">상태</th>
-                        <th className="p-2 border text-sm text-gray-500">우선순위</th>
-                        <th className="p-2 border text-sm text-gray-500">시작날짜</th>
-                        <th className="p-2 border text-sm text-gray-500">마감날짜</th>
-                        <th className="p-2 border text-sm text-gray-500">설명</th>
-                        <th className="p-2 border text-sm text-gray-500">추가 작업</th>
-                    </tr>
-                </thead>
-                {task.map((task, i) => (
-                    <tbody>
-                        <td className="p-2 text-sm text-black">
-                            <input type="checkbox" />
-                        </td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
-                        <td className="p-2 text-sm text-black"></td>
+            <div className='relative max-h-500 overflow-y-auto shadow-lg'>
+                <table className="w-full border-collapse box-border">
+                    <colgroup>
+                        <col style={{width: '5%'}} />
+                        <col style={{width: '20%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '20%'}} />
+                        <col style={{width: '5%'}} />
+                    </colgroup>
+                    <thead className="bg-white sticky top-0 z-20 thead-border">
+                        <tr className="bg-white text-base">
+                            <th className="p-2 text-sm text-gray-500 bg-white border-gray-300 relative th-border">
+                                <input type="checkbox" checked={isAllSelected} onChange={(e) => handleSelectAll(e.target.checked)}/>
+                            </th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">작업명</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">담당자</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">상태</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">우선순위</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">시작날짜</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">마감날짜</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">설명</th>
+                            <th className="p-2 text-sm text-gray-500 bg-white border border-gray-300 relative">추가 작업</th>
+                            </tr>
+                        </thead>
+                    <tbody className="overflow-y-auto" >
+                    {task.map((task, i) => (
+                        <tr key={i} className='relative hover:bg-gray-100' onClick={() => handleSelectTask(task.taskIdx)}>
+                            <td className="p-2 border text-sm text-black items-center text-center">
+                                <input type="checkbox" checked={selectedTasks[task.taskIdx]} onChange={(e) => handleCheckboxChange(e, task.taskIdx)} onClick={(e) => e.stopPropagation()}/>
+                            </td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.taskName}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.assignedTo}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center">
+                                <StatusBadge status={task.status} />
+                            </td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.priority}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.startDate}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.endDate}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center truncate max-w-72">{task.taskDescription}</td>
+                            <td className="p-2 border text-sm text-black relative items-center text-center">
+                                <button onClick={(e) => toggleDropdown(e, i)} className="cursor-pointer text-3xl w-4">
+                                    ⋮
+                                </button>
+                                <Dropdown 
+                                    isOpen={openDropdownIndex === i} 
+                                    onClose={() => setOpenDropdownIndex(null)}
+                                >
+                                    <button 
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        onClick={() => handleEditClick(task.idx)}
+                                    >
+                                        수정
+                                    </button>
+                                    <button 
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        onClick={() => handleDeleteClick(task.idx)}
+                                    >
+                                        삭제
+                                    </button>
+                                </Dropdown>
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
-                ))}
-            </table>
-            <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
-                <button 
-                    className="block w-full text-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => {
-                        setIsDropdownOpen(false);
-                        onEdit();
-                    }}
-                >
-                    수정
-                </button>
-                <button 
-                    className="block w-full text-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => {handleDeleteClick()}}
-                >
-                    삭제
-                </button>
-            </Dropdown>
+                </table>
+            </div>
         </section>
     );
 };

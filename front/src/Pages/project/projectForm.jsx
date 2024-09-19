@@ -38,8 +38,8 @@ export default function ProjectForm() {
 
 
     const handleInputChange = (e) => {
-        const { idx, value } = e.target;
-        setFormData(prev => ({ ...prev, [idx]: value }));
+        const { id, value } = e.target;
+        setFormData(prev => ({ ...prev, [id]: value }));
     };
 
     const handleDateChange = (idx, date) => {
@@ -63,8 +63,8 @@ export default function ProjectForm() {
                 <div className="mb-4 flex flex-col gap-4">
                     <InputModules id={"title"} content={"프로젝트 명"} widthSize={"300"} placeholder={"프로젝트 명을 입력하세요."} onChange={handleInputChange} value={formData.title}/>
                     <InputModules id={"description"} content={"프로젝트 설명"} widthSize={"300"} placeholder={"프로젝트 설명을 입력하세요."} onChange={handleInputChange} value={formData.description}/>
-                    <DatePickerModules content={"시작 날짜"} id={"startDate"} date={formData.startDate} onChange={(e)=>handleDateChange("startDate", e.target.value)} placeholder={"시작 날짜"}/>
-                    <DatePickerModules content={"마감 날짜"} id={"startDate"} date={formData.endDate} onChange={(e)=>handleDateChange("startDate", e.target.value)} placeholder={"마감 날짜"}/>
+                    <DatePickerModules content={"시작 날짜"} id={"startDate"} date={formData.startDate} onChange={(date)=>handleDateChange("startDate", date)} placeholder={"시작 날짜"}/>
+                    <DatePickerModules content={"마감 날짜"} id={"endDate"} date={formData.endDate} onChange={(date)=>handleDateChange("endDate", date)} placeholder={"마감 날짜"}/>
                 </div>
                 {/* 다른 필드들도 위와 같은 방식으로 추가 */}
                 <div className="flex items-center justify-between">
