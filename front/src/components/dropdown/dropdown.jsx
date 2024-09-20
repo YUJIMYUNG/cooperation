@@ -21,7 +21,7 @@ const Dropdown = ({ isOpen = null, onClose = null, children }) => {
     return (    
         <div 
             ref={dropdownRef}
-            className="absolute right-10 top-11 mt-2 w-24 bg-white rounded-md shadow-lg z-10"
+            className={`absolute right-0 top-11 mt-2 w-24 bg-white rounded-md shadow-lg z-10 `}
         >
             <div className="py-1">
                 {children}

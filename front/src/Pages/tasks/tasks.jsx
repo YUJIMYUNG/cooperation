@@ -10,69 +10,11 @@ import TaskTable from '../../components/modules/taskTable';
 import TaskCard from '../../components/modules/taskCard';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
+
+
 function Task() {
     const { idx } = useParams();
     const project = useSelector(state => state.projects.list.find(p => p.idx.toString() === idx));
-    // table에 보낼 check 여부 변서
-    const [selectedTasks, setSelectedTasks] = useState({});
-    const [isListView, setIsListView] = useState(true);
-    const [selectedCount, setSelectedCount] = useState(0);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    
-    // 체크의 갯수에 따라 모달을 띄워주고 갯수를 변경해줘야해서 useEffect
-    useEffect(() => {
-        const count = Object.values(selectedTasks).filter(Boolean).length;
-        setSelectedCount(count);
-        setIsModalOpen(count > 0);
-    }, [selectedTasks]);
-
-    // 갤러리인지, 리스트인지
-    const handleLayoutChange = (isList) => {
-        setIsListView(isList);
-        setSelectedTasks({});
-    };
-
-    // table에 보낼 thead 선택 시
-    const handleSelectAll = (isChecked) => {
-        const newSelectedTasks = {};
-        tasks.forEach(t => {
-            newSelectedTasks[t.taskIdx] = isChecked;
-        });
-        setSelectedTasks(newSelectedTasks);
-    };
-
-    // 체크박스 체크 이벤트
-    const handleSelectTask = (taskIdx) => {
-        setSelectedTasks(prev => ({
-            ...prev,
-            [taskIdx]: !prev[taskIdx]
-        }));
-        console.log(selectedTasks);
-    };
-
-    // 삭제 이벤트
-    const handleDelete = () => {
-        // 여기에 선택된 작업들을 삭제하는 로직을 구현합니다.
-        // 삭제 후 선택 상태 초기화
-        setSelectedTasks({});
-    };
-
-    // 샘플 데이터
-    const projectMember = [
-        {
-            color : "gray",
-            nickname : "gogogogo"
-        },
-        {
-            color : "blue",
-            nickname : "abcdefg"    
-        },
-        {   
-            color: "red",
-            nickname : "kkkkkkkkk"
-        },
-    ]
-
     // 샘플데이터
     const [tasks, setTasks] = useState([
         {   
@@ -186,6 +128,89 @@ function Task() {
         }
       ]);
 
+    // table에 보낼 check 여부 변서
+    const [selectedTasks, setSelectedTasks] = useState({});
+    const [isListView, setIsListView] = useState(true);
+    const [selectedCount, setSelectedCount] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // tasks가 변경될 때마다 selectedTasks를 초기화합니다.
+    // 갤러리에서 상태를 변경할 수 있기 때문에
+    useEffect(() => {
+        const initialSelectedTasks = {};
+        tasks.forEach(task => {
+            initialSelectedTasks[task.taskIdx] = false;
+        });
+        setSelectedTasks(initialSelectedTasks);
+    }, [tasks]);
+    
+    // 체크의 갯수에 따라 모달을 띄워주고 갯수를 변경해줘야해서 useEffect
+    useEffect(() => {
+        const count = Object.values(selectedTasks).filter(Boolean).length;
+        setSelectedCount(count);
+        setIsModalOpen(count > 0);
+    }, [selectedTasks]);
+
+    // 갤러리인지, 리스트인지
+    const handleLayoutChange = (isList) => {
+        setIsListView(isList);
+    };
+
+    // table에 보낼 thead 선택 시
+    const handleSelectAll = (isChecked) => {
+        const newSelectedTasks = {};
+        tasks.forEach(t => {
+            newSelectedTasks[t.taskIdx] = isChecked;
+        });
+        setSelectedTasks(newSelectedTasks);
+    };
+
+    // 체크박스 체크 이벤트
+    const handleSelectTask = (taskIdx) => {
+        setSelectedTasks(prev => ({
+            ...prev,
+            [taskIdx]: !prev[taskIdx]
+        }));
+        console.log(selectedTasks);
+    };
+
+    // 선택된 작업들을 삭제하는 로직 구현
+    // 리스트 형식의 모달에서 작동할 예정
+    const handleBulkDelete = () => {
+        console.log("선택된 작업 삭제:", Object.keys(selectedTasks).filter(key => selectedTasks[key]));
+        setSelectedTasks({});
+    };
+
+    // 선택된 작업들을 삭제하는 로직 구현
+    // ...이나 :을 클릭했을 때 작동
+    const handleIndividualEdit = (taskIdx) => {
+        console.log("작업 수정:", taskIdx);
+    };
+
+    // 개별 작업 삭제 로직 구현
+    // ...이나 :을 클릭했을 때 작동
+    const handleIndividualDelete = (taskIdx) => {
+        console.log("작업 삭제:", taskIdx);
+    };
+
+    // 샘플 데이터
+    const projectMember = [
+        {
+            color : "gray",
+            nickname : "gogogogo"
+        },
+        {
+            color : "blue",
+            nickname : "abcdefg"    
+        },
+        {   
+            color: "red",
+            nickname : "kkkkkkkkk"
+        },
+    ]
+
+    
+
     const onClickHandler = () => {
 
     }
@@ -259,7 +284,6 @@ function Task() {
         });
     }, []);
 
-
     const renderDraggableTask = useCallback((task, index) => (
         <Draggable key={task.taskIdx.toString()} draggableId={task.taskIdx.toString()} index={index}>
             {(provided) => (
@@ -268,11 +292,18 @@ function Task() {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >
-                    <TaskCard task={task} /> 
+                    <TaskCard 
+                        task={task} 
+                        onEdit={() => handleIndividualEdit(task.taskIdx)}
+                        onDelete={() => handleIndividualDelete(task.taskIdx)}
+                        isSelected={selectedTasks[task.taskIdx]}
+                        onSelect={() => handleSelectTask(task.taskIdx)}
+                    />
                 </div>
             )}
         </Draggable>
     ), []);
+
 
     return (
         <div className='w-11/12 mx-auto'>
@@ -304,8 +335,8 @@ function Task() {
                 <section className='w-full mt-5'>
                     <TaskTable 
                         task={tasks} 
-                        onDelete={null} 
-                        onEdit={null} 
+                        onDelete={handleIndividualEdit} 
+                        onEdit={handleIndividualEdit} 
                         selectedTasks={selectedTasks} 
                         setSelectedTasks={setSelectedTasks}
                         handleSelectAll={handleSelectAll}
@@ -315,7 +346,7 @@ function Task() {
                         <div className='mt-10 w-400 h-11 bottom-0 sticky z-20 mx-auto'>
                             <div className="fixed bg-white p-4 border border-black flex items-center gap-3">
                                 <p>{selectedCount}개의 작업이 선택되었습니다.</p>
-                                <Button color={"red"} onClickHandler={handleDelete} text={"선택한 작업 삭제"} />
+                                <Button color={"red"} onClickHandler={handleBulkDelete} text={"선택한 작업 삭제"} />
                             </div>
                         </div>
                     )}
