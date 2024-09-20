@@ -9,6 +9,7 @@ import LayoutToggle from '../../atom/layoutToggle';
 import TaskTable from '../../components/modules/taskTable';
 import TaskCard from '../../components/modules/taskCard';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import TasksFormModal from '../../components/modal/tasksFormModal';
 
 
 
@@ -132,7 +133,11 @@ function Task() {
     const [selectedTasks, setSelectedTasks] = useState({});
     const [isListView, setIsListView] = useState(true);
     const [selectedCount, setSelectedCount] = useState(0);
+    // 밑에 삭제를 위해 나타나는 모달
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // TasksFormModal을 위한 상태
+    const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
 
     // tasks가 변경될 때마다 selectedTasks를 초기화합니다.
     // 갤러리에서 상태를 변경할 수 있기 때문에
@@ -177,14 +182,7 @@ function Task() {
     // 선택된 작업들을 삭제하는 로직 구현
     // 리스트 형식의 모달에서 작동할 예정
     const handleBulkDelete = () => {
-        console.log("선택된 작업 삭제:", Object.keys(selectedTasks).filter(key => selectedTasks[key]));
         setSelectedTasks({});
-    };
-
-    // 선택된 작업들을 삭제하는 로직 구현
-    // ...이나 :을 클릭했을 때 작동
-    const handleIndividualEdit = (taskIdx) => {
-        console.log("작업 수정:", taskIdx);
     };
 
     // 개별 작업 삭제 로직 구현
@@ -208,8 +206,6 @@ function Task() {
             nickname : "kkkkkkkkk"
         },
     ]
-
-    
 
     const onClickHandler = () => {
 
@@ -298,12 +294,43 @@ function Task() {
                         onDelete={() => handleIndividualDelete(task.taskIdx)}
                         isSelected={selectedTasks[task.taskIdx]}
                         onSelect={() => handleSelectTask(task.taskIdx)}
+                        openTaskForm={openTaskForm}
                     />
                 </div>
             )}
         </Draggable>
     ), []);
 
+
+    // TasksFormModal 열기 함수
+    const openTaskForm = (task = null) => {
+        setEditingTask(task);
+        setIsTaskFormOpen(true);
+    };
+
+    // TasksFormModal 닫기 함수
+    const closeTaskForm = () => {
+        setIsTaskFormOpen(false);
+        setEditingTask(null);
+    };
+
+    // 작업 생성 버튼 핸들러
+    const handleCreateTask = () => {
+        openTaskForm();
+    };
+
+     // 선택된 작업들을 삭제하는 로직 구현
+    // ...이나 :을 클릭했을 때 작동
+    const handleIndividualEdit = (taskIdx) => {
+        console.log("작업 수정:", taskIdx);
+        closeTaskForm();
+    };
+
+    // 작업 저장/수정 핸들러
+    const handleSaveTask = (taskData) => {
+        console.log("작업 생성 :", taskData);
+        closeTaskForm();
+    };
 
     return (
         <div className='w-11/12 mx-auto'>
@@ -335,7 +362,7 @@ function Task() {
                 <section className='w-full mt-5'>
                     <TaskTable 
                         task={tasks} 
-                        onDelete={handleIndividualEdit} 
+                        onDelete={handleIndividualDelete} 
                         onEdit={handleIndividualEdit} 
                         selectedTasks={selectedTasks} 
                         setSelectedTasks={setSelectedTasks}
@@ -401,7 +428,12 @@ function Task() {
                     </section>
                 </DragDropContext>
             )}
-            
+             <TasksFormModal 
+                task={editingTask}
+                isOpen={isTaskFormOpen}
+                onClose={closeTaskForm}
+                onSave={handleSaveTask}
+            />
              
         </div>
     );

@@ -48,14 +48,14 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                 <table className="w-full border-collapse box-border">
                     <colgroup>
                         <col style={{width: '5%'}} />
-                        <col style={{width: '20%'}} />
+                        <col style={{width: '15%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '20%'}} />
-                        <col style={{width: '5%'}} />
+                        <col style={{width: '10%'}} />
                     </colgroup>
                     <thead className="bg-white sticky top-0 z-20 thead-border">
                         <tr className="bg-white text-base">

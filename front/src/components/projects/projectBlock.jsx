@@ -62,7 +62,8 @@ export default function ProjectBlock({ idx, title, creator, description, startDa
                 isOpen={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onConfirm={handleDeleteConfirm}
-                projectTitle={title}
+                name={title}
+                type={"프로젝트"}
             />
         </div>
     );
