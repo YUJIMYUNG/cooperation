@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from '../dropdown/dropdown';
 import StatusBadge from '../../atom/statusBadge';
 
 const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSelectedTasks, handleSelectAll, handleSelectTask}) => {
     const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
     
+    useEffect(() => {
+        // 모든 작업에 대해 선택 상태를 초기화합니다.
+        const initialSelectedTasks = {};
+        task.forEach(t => {
+            initialSelectedTasks[t.taskIdx] = false;
+        });
+        setSelectedTasks(initialSelectedTasks);
+    }, [task, setSelectedTasks]);
+
     // :버튼을 눌렀을 때 해당하는 놈의 드롭 박스 나타나기
     const toggleDropdown = (e, idx) => {
         e.stopPropagation();
@@ -12,13 +21,15 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
     };
 
     // 수정하기 버튼을 눌렀을 때 작동하는 함수
-    const handleEditClick = (taskIdx) => {
+    const handleEditClick = (e,taskIdx) => {
+        e.stopPropagation(); // 이벤트 전파 중지
         setOpenDropdownIndex(null);
         onEdit(taskIdx);
     };
     
     //삭제 버튼을 눌렀을 때 작동하는 함수
-    const handleDeleteClick = (taskIdx) => {
+    const handleDeleteClick = (e, taskIdx) => {
+        e.stopPropagation(); // 이벤트 전파 중지
         setOpenDropdownIndex(null);
         onDelete(taskIdx);
     };
@@ -37,14 +48,14 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                 <table className="w-full border-collapse box-border">
                     <colgroup>
                         <col style={{width: '5%'}} />
-                        <col style={{width: '20%'}} />
+                        <col style={{width: '15%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '20%'}} />
-                        <col style={{width: '5%'}} />
+                        <col style={{width: '10%'}} />
                     </colgroup>
                     <thead className="bg-white sticky top-0 z-20 thead-border">
                         <tr className="bg-white text-base">
@@ -65,7 +76,7 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                     {task.map((task, i) => (
                         <tr key={i} className='relative hover:bg-gray-100' onClick={() => handleSelectTask(task.taskIdx)}>
                             <td className="p-2 border text-sm text-black items-center text-center">
-                                <input type="checkbox" checked={selectedTasks[task.taskIdx]} onChange={(e) => handleCheckboxChange(e, task.taskIdx)} onClick={(e) => e.stopPropagation()}/>
+                                <input type="checkbox" checked={selectedTasks[task.taskIdx] || false} onChange={(e) => handleCheckboxChange(e, task.taskIdx)} onClick={(e) => e.stopPropagation()}/>
                             </td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.taskName}</td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.assignedTo}</td>
@@ -86,13 +97,13 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                                 >
                                     <button 
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        onClick={() => handleEditClick(task.idx)}
+                                        onClick={(e) => handleEditClick(e,task.taskIdx)}
                                     >
                                         수정
                                     </button>
                                     <button 
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        onClick={() => handleDeleteClick(task.idx)}
+                                        onClick={(e) => handleDeleteClick(e,task.taskIdx)}
                                     >
                                         삭제
                                     </button>
