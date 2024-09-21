@@ -24,7 +24,7 @@ const UserIcon = ({ size = 'md', color = 'gray',nickname ='User', onclick = null
     };
 
     return (
-        <div className={`rounded-full flex items-center justify-center ${sizeClasses[size]} ${colorClasses[color]}`} onclick={onclick}>
+        <div className={`rounded-full flex items-center justify-center ${sizeClasses[size]} ${colorClasses[color]}`} onClick={onclick}>
             <span className="font-bold">{truncatedNickname}</span>
         </div>
     );

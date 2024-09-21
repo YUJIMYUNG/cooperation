@@ -127,7 +127,7 @@ function Task() {
             endDate: '2023-03-31',
             assignedTo: 5
         }
-      ]);
+    ]);
 
     // table에 보낼 check 여부 변서
     const [selectedTasks, setSelectedTasks] = useState({});
@@ -303,7 +303,9 @@ function Task() {
 
 
     // TasksFormModal 열기 함수
-    const openTaskForm = (task = null) => {
+    const openTaskForm = (e, task = null) => {
+        e.preventDefault();
+        e.stopPropagation(); // 이벤트 전파 중지
         setEditingTask(task);
         setIsTaskFormOpen(true);
     };
@@ -337,7 +339,7 @@ function Task() {
             <div>
                 <BodyHeader title={project.title} subtitle={project.description} children={
                     <div>
-                        <Button color={"yellow"} onClickHandler={()=>onClickHandler()} text={"작업 생성"}/>
+                        <Button color={"yellow"} onClickHandler={(e)=>openTaskForm(e)} text={"작업 생성"}/>
                     </div>
                 } />
             </div>
@@ -368,6 +370,7 @@ function Task() {
                         setSelectedTasks={setSelectedTasks}
                         handleSelectAll={handleSelectAll}
                         handleSelectTask={handleSelectTask}
+                        openTaskForm={openTaskForm}
                     />
                     {isModalOpen && (
                         <div className='mt-10 w-400 h-11 bottom-0 sticky z-20 mx-auto'>

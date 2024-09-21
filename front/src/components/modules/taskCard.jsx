@@ -6,9 +6,6 @@ import TasksFormModal from "../modal/tasksFormModal";
 const TaskCard = ({ task, onClick, onEdit, onDelete, openTaskForm }) => {
     
     const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
-   
-
-  
 
     // ...버튼을 눌렀을 때 해당하는 놈의 드롭 박스 나타나기
     const toggleDropdown = (e, idx) => {
@@ -18,10 +15,8 @@ const TaskCard = ({ task, onClick, onEdit, onDelete, openTaskForm }) => {
 
     // 수정하기 버튼을 눌렀을 때 작동하는 함수
     const handleEditClick = (e,task) => {
-        e.preventDefault();
-        e.stopPropagation(); // 이벤트 전파 중지
         setOpenDropdownIndex(null);
-        openTaskForm(task);
+        openTaskForm(e, task);
     };
     
     //삭제 버튼을 눌렀을 때 작동하는 함수
@@ -29,7 +24,7 @@ const TaskCard = ({ task, onClick, onEdit, onDelete, openTaskForm }) => {
         e.preventDefault();
         e.stopPropagation();
         setOpenDropdownIndex(null);
-        onDelete(taskIdx);
+        onDelete(e, taskIdx);
     };
     
     return(

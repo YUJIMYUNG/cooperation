@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Dropdown from '../dropdown/dropdown';
 import StatusBadge from '../../atom/statusBadge';
 
-const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSelectedTasks, handleSelectAll, handleSelectTask}) => {
+const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSelectedTasks, handleSelectAll, handleSelectTask, openTaskForm}) => {
     const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
     
     useEffect(() => {
@@ -21,17 +21,17 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
     };
 
     // 수정하기 버튼을 눌렀을 때 작동하는 함수
-    const handleEditClick = (e,taskIdx) => {
-        e.stopPropagation(); // 이벤트 전파 중지
+    const handleEditClick = (e,task) => {
         setOpenDropdownIndex(null);
-        onEdit(taskIdx);
+        openTaskForm(e, task);
     };
     
     //삭제 버튼을 눌렀을 때 작동하는 함수
     const handleDeleteClick = (e, taskIdx) => {
-        e.stopPropagation(); // 이벤트 전파 중지
+        e.preventDefault();
+        e.stopPropagation();
         setOpenDropdownIndex(null);
-        onDelete(taskIdx);
+        onDelete(e, taskIdx);
     };
 
     // 각각의 체크박스를 눌렀을 때 작동
@@ -97,7 +97,7 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                                 >
                                     <button 
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        onClick={(e) => handleEditClick(e,task.taskIdx)}
+                                        onClick={(e) => handleEditClick(e,task)}
                                     >
                                         수정
                                     </button>
