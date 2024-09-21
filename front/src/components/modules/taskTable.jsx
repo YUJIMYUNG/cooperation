@@ -22,22 +22,24 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
 
     // 수정하기 버튼을 눌렀을 때 작동하는 함수
     const handleEditClick = (e,task) => {
-        setOpenDropdownIndex(null);
-        openTaskForm(e, task);
-    };
-    
-    //삭제 버튼을 눌렀을 때 작동하는 함수
-    const handleDeleteClick = (e, taskIdx) => {
         e.preventDefault();
         e.stopPropagation();
         setOpenDropdownIndex(null);
-        onDelete(e, taskIdx);
+        openTaskForm(task);
+    };
+    
+    //삭제 버튼을 눌렀을 때 작동하는 함수
+    const handleDeleteClick = (e, task) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpenDropdownIndex(null);
+        onDelete(task);
     };
 
     // 각각의 체크박스를 눌렀을 때 작동
-    const handleCheckboxChange = (e, taskIdx) => {
+    const handleCheckboxChange = (e, task) => {
         e.stopPropagation(); // 이벤트 전파 중지
-        handleSelectTask(taskIdx);
+        handleSelectTask(task);
     };
 
     const isAllSelected = task.length > 0 && task.every(t => selectedTasks[t.taskIdx]);
@@ -103,7 +105,7 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                                     </button>
                                     <button 
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        onClick={(e) => handleDeleteClick(e,task.taskIdx)}
+                                        onClick={(e) => handleDeleteClick(e,task)}
                                     >
                                         삭제
                                     </button>

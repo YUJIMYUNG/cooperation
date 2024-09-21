@@ -10,6 +10,7 @@ import TaskTable from '../../components/modules/taskTable';
 import TaskCard from '../../components/modules/taskCard';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import TasksFormModal from '../../components/modal/tasksFormModal';
+import DeleteConfirmModal from '../../components/modal/deleteConfirmModal';
 
 
 
@@ -138,6 +139,10 @@ function Task() {
     // TasksFormModal을 위한 상태
     const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
+    // 삭제 모달
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
+    const [isBulkDelete, setIsBulkDelete] = useState(false);
 
     // tasks가 변경될 때마다 selectedTasks를 초기화합니다.
     // 갤러리에서 상태를 변경할 수 있기 때문에
@@ -177,18 +182,6 @@ function Task() {
             [taskIdx]: !prev[taskIdx]
         }));
         console.log(selectedTasks);
-    };
-
-    // 선택된 작업들을 삭제하는 로직 구현
-    // 리스트 형식의 모달에서 작동할 예정
-    const handleBulkDelete = () => {
-        setSelectedTasks({});
-    };
-
-    // 개별 작업 삭제 로직 구현
-    // ...이나 :을 클릭했을 때 작동
-    const handleIndividualDelete = (taskIdx) => {
-        console.log("작업 삭제:", taskIdx);
     };
 
     // 샘플 데이터
@@ -290,8 +283,8 @@ function Task() {
                 >
                     <TaskCard 
                         task={task} 
-                        onEdit={() => handleIndividualEdit(task.taskIdx)}
-                        onDelete={() => handleIndividualDelete(task.taskIdx)}
+                        onEdit={handleIndividualEdit}
+                        onDelete={handleIndividualDelete}
                         isSelected={selectedTasks[task.taskIdx]}
                         onSelect={() => handleSelectTask(task.taskIdx)}
                         openTaskForm={openTaskForm}
@@ -303,9 +296,7 @@ function Task() {
 
 
     // TasksFormModal 열기 함수
-    const openTaskForm = (e, task = null) => {
-        e.preventDefault();
-        e.stopPropagation(); // 이벤트 전파 중지
+    const openTaskForm = (task = null) => {
         setEditingTask(task);
         setIsTaskFormOpen(true);
     };
@@ -323,8 +314,8 @@ function Task() {
 
      // 선택된 작업들을 삭제하는 로직 구현
     // ...이나 :을 클릭했을 때 작동
-    const handleIndividualEdit = (taskIdx) => {
-        console.log("작업 수정:", taskIdx);
+    const handleIndividualEdit = (task) => {
+        console.log("작업 수정:", task);
         closeTaskForm();
     };
 
@@ -333,6 +324,53 @@ function Task() {
         console.log("작업 생성 :", taskData);
         closeTaskForm();
     };
+
+    // 삭제 모달 열기 (개별 삭제)
+    const openDeleteModal = (task) => {
+        setTaskToDelete(task);
+        setIsBulkDelete(false);
+        setIsDeleteModalOpen(true);
+    }
+
+    // 삭제 모달 열기 (일괄 삭제)
+    const openBulkDeleteModal = () => {
+        setIsBulkDelete(true);
+        setIsDeleteModalOpen(true);
+    }
+
+    // 삭제 모달 닫기
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setTaskToDelete(null);
+    } 
+
+    // 개별 작업 삭제 로직
+    const handleIndividualDelete = (task) => {
+        if (task && task.taskIdx) {
+            openDeleteModal(task);
+        } else {
+            console.error('Invalid task object:', task);
+        }
+    };
+
+    // 일괄 작업 삭제 로직
+    const handleBulkDelete = () => {
+        openBulkDeleteModal();
+    };
+
+    // 작업 삭제 확인
+    const confirmDelete = () => {
+        if (isBulkDelete) {
+            // 일괄 삭제 로직
+            const tasksToKeep = tasks.filter(task => !selectedTasks[task.taskIdx]);
+            setTasks(tasksToKeep);
+            setSelectedTasks({});
+        } else if (taskToDelete) {
+            // 개별 삭제 로직
+            setTasks(prevTasks => prevTasks.filter(task => task.taskIdx !== taskToDelete.taskIdx));
+        }
+        closeDeleteModal();
+    }
 
     return (
         <div className='w-11/12 mx-auto'>
@@ -431,14 +469,21 @@ function Task() {
                     </section>
                 </DragDropContext>
             )}
-             <TasksFormModal 
+            <TasksFormModal 
                 task={editingTask}
                 isOpen={isTaskFormOpen}
                 onClose={closeTaskForm}
                 onSave={handleSaveTask}
             />
-             
+            <DeleteConfirmModal 
+                type={isBulkDelete ? "선택된 작업들" : "작업"}
+                isOpen={isDeleteModalOpen}
+                onClose={closeDeleteModal}
+                onConfirm={confirmDelete}
+                name={isBulkDelete ? `${selectedCount}개의 작업` : (taskToDelete ? taskToDelete.taskName : '')}
+            />
         </div>
+
     );
 }
 
