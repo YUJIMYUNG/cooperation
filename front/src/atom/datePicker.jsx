@@ -4,17 +4,16 @@ import React, { useState } from 'react';
 const DatePickerAtom = ({date, onChange, placeholder, id}) => {
 
 	const handleDateChange = (e) => {
-		const newDate = new Date(e.target.value);
-		onChange(newDate);
+		onChange({ target: { id, value: e.target.value } });
 	  };
 
 	return (
 	  <div className="relative max-w-sm font-nanum-squareB">
 		<input
 		  type="date"
-		  value={date.toISOString().split('T')[0]}
+		  value={date}
 		  onChange={handleDateChange}
-		  className="bg-white border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-300 pl-1 p-2.5"
+		  className="bg-white border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-400 pl-1 p-2.5"
 		  placeholder={placeholder}
 		  id={id}
 		/>
