@@ -14,6 +14,7 @@ const PasswordModify = lazy(() => import('../../components/mypages/passwordModif
 const AccountDelete = lazy(() => import('../../components/mypages/accountDelete'));
 const Tasks = lazy(() => import('../../Pages/tasks/tasks'));
 const UserInformation = lazy(() => import('../../components/mypages/userInformation'));
+const MyPageNav =lazy(()=>import('../mypages/myPageNav'))
 
 const Layout = () => {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -110,22 +111,27 @@ const root = createBrowserRouter([
   },
   {
     path: '/mypage',
+    element: <Layout></Layout>,
     children: [
       {
         path: 'information',
-        element: <Layout><Suspense fallback={<Loading />}><UserInformation /></Suspense></Layout>,
+        index:true,
+        element: <Suspense fallback={<Loading />}><MyPageNav/><UserInformation /></Suspense>,
       },
       {
         path: 'nicknameModify',
-        element: <Layout><Suspense fallback={<Loading />}><NicknameModify /></Suspense></Layout>,
+        index:true,
+        element: <Suspense fallback={<Loading />}><MyPageNav/><NicknameModify /></Suspense>,
       },
       {
         path: 'passwordModify',
-        element: <Layout><Suspense fallback={<Loading />}><PasswordModify /></Suspense></Layout>,
+        index:true,
+        element: <Suspense fallback={<Loading />}><MyPageNav/><PasswordModify /></Suspense>,
       },
       {
         path: 'deleteAccount',
-        element: <Layout><Suspense fallback={<Loading />}><AccountDelete /></Suspense></Layout>,
+        index:true,
+        element: <Suspense fallback={<Loading />}><MyPageNav/><AccountDelete /></Suspense>,
       },
     ],
   },
