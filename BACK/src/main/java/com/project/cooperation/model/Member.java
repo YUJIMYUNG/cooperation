@@ -3,9 +3,14 @@ package com.project.cooperation.model;
 import com.project.cooperation.common.Role;
 import jakarta.persistence.*;
 import lombok.*;
+<<<<<<< HEAD
 
 import java.util.ArrayList;
 import java.util.List;
+=======
+import org.hibernate.annotations.IdGeneratorType;
+import org.hibernate.annotations.Type;
+>>>>>>> d60c0ed6a48a5691b1606b8d6ee5167431e0df80
 
 @Entity
 @Table(name = "member")

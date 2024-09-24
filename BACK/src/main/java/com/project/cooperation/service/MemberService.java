@@ -1,6 +1,7 @@
 package com.project.cooperation.service;
 
 import com.project.cooperation.model.Member;
+import com.project.cooperation.model.Project;
 import com.project.cooperation.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,5 +12,5 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 }
