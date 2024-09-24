@@ -1,12 +1,10 @@
 package com.project.cooperation.repository;
 
-import com.project.cooperation.model.Member;
+import com.project.cooperation.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Integer> {
+public interface ProjectRepository extends JpaRepository<Project, Long> {
 
 }

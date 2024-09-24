@@ -1,12 +1,15 @@
 // 리듀서 정의
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { LOCAL_HOST } from '../cosntact/path';
 
 // // 비동기 액션 생성
- export const fetchProjects = createAsyncThunk('projects/fetchProjects', async () => {
-//   const response = await fetch('https://api.example.com/projects');
-//   return response.json();
+export const fetchProjects = createAsyncThunk('projects/fetchProjects', async ({page = 0, size = 10}) => {
+  const response = await fetch(LOCAL_HOST + `/api/projects?page=${page}&size=${size}`);
+  const data = await response.json();
+  console.log("리덕스 비동기 : " + data);
+  return data;
 
- });
+});
 
 // export const createProject = createAsyncThunk('projects/createProject', async (projectData) => {
 //   const response = await fetch('https://api.example.com/projects', {
@@ -42,36 +45,36 @@ const projectsSlice = createSlice({
     error: null
   },
   reducers: {},
-//   extraReducers: (builder) => {
-//     builder
-//       // 프로젝트 패치
-//       .addCase(fetchProjects.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(fetchProjects.fulfilled, (state, action) => {
-//         state.status = 'succeeded';
-//         state.list = action.payload;
-//       })
-//       .addCase(fetchProjects.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.error.message;
-//       })
-//       // 프로젝트 생성
-//       .addCase(createProject.fulfilled, (state, action) => {
-//         state.list.push(action.payload);
-//       })
-//       // 프로젝트 수정
-//       .addCase(updateProject.fulfilled, (state, action) => {
-//         const index = state.list.findIndex(project => project.id === action.payload.id);
-//         if (index !== -1) {
-//           state.list[index] = action.payload;
-//         }
-//       })
-//       // 프로젝트 삭제
-//       .addCase(deleteProject.fulfilled, (state, action) => {
-//         state.list = state.list.filter(project => project.id !== action.payload);
-//       });
-//   }
+  extraReducers: (builder) => {
+    builder
+      // 프로젝트 패치
+      .addCase(fetchProjects.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchProjects.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.list = action.payload;
+      })
+      .addCase(fetchProjects.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      // // 프로젝트 생성
+      // .addCase(createProject.fulfilled, (state, action) => {
+      //   state.list.push(action.payload);
+      // })
+      // // 프로젝트 수정
+      // .addCase(updateProject.fulfilled, (state, action) => {
+      //   const index = state.list.findIndex(project => project.id === action.payload.id);
+      //   if (index !== -1) {
+      //     state.list[index] = action.payload;
+      //   }
+      // })
+      // // 프로젝트 삭제
+      // .addCase(deleteProject.fulfilled, (state, action) => {
+      //   state.list = state.list.filter(project => project.id !== action.payload);
+      // });
+  }
 }); 
 
 export default projectsSlice.reducer;
