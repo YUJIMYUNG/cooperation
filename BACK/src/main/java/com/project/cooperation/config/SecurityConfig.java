@@ -1,5 +1,7 @@
 package com.project.cooperation.config;
 
+import com.project.cooperation.security.handler.APILoginFailHandler;
+import com.project.cooperation.security.handler.APILoginSuccessHandler;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,16 +25,23 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    //인증/인가 및 로그아웃을 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 하단에서 정의한 cors를 설정함
-                .formLogin(Customizer.withDefaults())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> {
+                .formLogin(config ->{
+                    config.loginPage("/api/member/login");//로그인페이지
+                    config.successHandler(new APILoginSuccessHandler());//성공하면 동작하게 하는 기능
+                    config.failureHandler(new APILoginFailHandler());//로그인 실패하면 동작하게 하는 기능
+                })
+                //세션 생성 및 사용여부에 대한 정책 설정
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> { //세션을 만들지 않게 하는 설정
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.NEVER);
                 })
+                //인증, 인가가 필요한 URL 지정
                 .authorizeHttpRequests(authorizeReqeust ->
                         authorizeReqeust
                                 .requestMatchers( "/api/user/**").authenticated()//인증 된 사용자는 projects, user 에 접근 가능
