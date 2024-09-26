@@ -15,9 +15,10 @@ export default function ProjectForm() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        idx:'',
         title: '',
         description: '',
-        creator: '',
+        author: '',
         startDate: '',
         endDate: ''
     });
@@ -28,7 +29,7 @@ export default function ProjectForm() {
                 idx: idx || '',
                 title: project.title || '',
                 description: project.description || '',
-                creator: project.creator || '',
+                author: project.creator || '',
                 startDate: project.startDate || '',
                 endDate: project.endDate || ''
             });
@@ -44,11 +45,11 @@ export default function ProjectForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // if (id) {
-        //     dispatch(updateProject({ id, updates: formData }));
-        // } else {
-        //     dispatch(createProject(formData));
-        // }
+        console.log(formData);
+        if(!idx){
+            dispatch(createProject(formData));
+        }
+        
         navigate('/');
     };
 

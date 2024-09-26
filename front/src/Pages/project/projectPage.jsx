@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../atom/button";
@@ -11,27 +11,44 @@ export default function ProjectPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const projects = useSelector(state => state.projects.list);
+    const projects = useSelector(state => state.projects?.list ?? []);
     const status = useSelector(state => state.projects.status);
     const error = useSelector(state => state.projects.error);
+    const totalPages = useSelector(state => state.projects?.totalPages ?? 0);
+
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
     
     useEffect(() => {
-        if (status === 'idle') {
-            // dispatch(fetchProjects());
-        }
-    }, [status, dispatch]);
+        const abortController = new AbortController();
+        dispatch(fetchProjects({ page: currentPage, size: pageSize, signal: abortController.signal }));
+        
+        return () => {
+          abortController.abort();
+        };
+      }, [dispatch, currentPage, pageSize]);
+
+    useEffect(() => {
+        return () => {
+          dispatch({ type: 'projects/resetState' });
+        };
+      }, [dispatch]);
 
     const createProjectHandler = () => {
         navigate("/create-project");
     }
 
-    const editProjectHandler = (id) => {
-        navigate(`/edit-project/${id}`);
+    const editProjectHandler = (idx) => {
+        navigate(`/edit-project/${idx}`);
     }
 
     const deleteProjectHandler = (id) => {
         console.log(id);
             // dispatch(deleteProject(id));
+    }
+    // 페이징
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
     }
     
     if (status === 'loading') return <div>Loading...</div>;
@@ -57,14 +74,26 @@ export default function ProjectPage() {
                 <p className="col-span-1">추가 작업</p>
             </div>
             <div>
-                {projects.map((project, i) => (
+                {projects && projects.map((project, i) => (
                     <ProjectBlock 
-                        key={project.idx} 
-                        {...project}
+                        key={i} 
+                        title={project.title}
                         idx={project.idx}
+                        description={project.description}
+                        author={project.author}
+                        startDate={project.startDate}
+                        endDate={project.endDate}
                         onEdit={() => editProjectHandler(project.idx)}
                         onDelete={() => deleteProjectHandler(project.idx)}
                     />
+                ))}
+            </div>
+            <div className="flex justify-center items-center gap-5">
+                {/* 페이지네이션 컨트롤 */}
+                {Array.from({ length: totalPages }, (_, i) => (
+                    <button key={i} onClick={() => handlePageChange(i)}>
+                        {i + 1}
+                    </button>
                 ))}
             </div>
         </div>
