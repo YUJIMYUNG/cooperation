@@ -14,13 +14,13 @@ CREATE TABLE member (
 
 -- Project 테이블 생성
 CREATE TABLE project (
-  project_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '프로젝트 ID',
+  project_idx BIGINT NOT NULL AUTO_INCREMENT COMMENT '프로젝트 ID',
   project_name VARCHAR(100) NOT NULL COMMENT '제목',
   member_idx BIGINT NOT NULL COMMENT '만든이',
   project_description VARCHAR(100) NOT NULL COMMENT '설명, 내용',
   project_start_date DATE NOT NULL COMMENT '시작날',
   project_end_date DATE NOT NULL COMMENT '끝나는날',
-  PRIMARY KEY (project_id),
+  PRIMARY KEY (project_idx),
   CONSTRAINT FK_member_TO_project 
     FOREIGN KEY (member_idx) REFERENCES member (member_idx)
     ON DELETE CASCADE
@@ -30,32 +30,32 @@ CREATE TABLE project (
 -- Project_Member 테이블 생성
 CREATE TABLE project_member (
   member_idx BIGINT NOT NULL COMMENT '멤버 인덱스',
-  project_id BIGINT NOT NULL COMMENT '프로젝트 ID',
-  PRIMARY KEY (member_idx, project_id),
+  project_idx BIGINT NOT NULL COMMENT '프로젝트 ID',
+  PRIMARY KEY (member_idx, project_idx),
   CONSTRAINT FK_member_TO_project_member 
     FOREIGN KEY (member_idx) REFERENCES member (member_idx)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT FK_project_TO_project_member 
-    FOREIGN KEY (project_id) REFERENCES project (project_id)
+    FOREIGN KEY (project_idx) REFERENCES project (project_idx)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) COMMENT '프로젝트 멤버 관계';
 
 -- Task 테이블 생성
 CREATE TABLE task (
-  task_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '작업 ID',
+  task_idx BIGINT NOT NULL AUTO_INCREMENT COMMENT '작업 ID',
   task_name VARCHAR(50) NOT NULL COMMENT '작업 이름',
   task_description VARCHAR(100) NOT NULL COMMENT '작업 설명',
-  project_id BIGINT NOT NULL COMMENT '프로젝트 ID',
+  project_idx BIGINT NOT NULL COMMENT '프로젝트 ID',
   priority VARCHAR(50) NOT NULL COMMENT '우선순위',
-  status VARCHAR(10) NOT NULL COMMENT '진행 상태',
+  status VARCHAR(11) NOT NULL COMMENT '진행 상태',
   start_date DATE NOT NULL COMMENT '시작일',
   end_date DATE NOT NULL COMMENT '종료일',
   assigned_to BIGINT NOT NULL COMMENT '작업자',
-  PRIMARY KEY (task_id),
+  PRIMARY KEY (task_idx),
   CONSTRAINT FK_project_TO_task 
-    FOREIGN KEY (project_id) REFERENCES project (project_id)
+    FOREIGN KEY (project_idx) REFERENCES project (project_idx)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT FK_member_TO_task 
@@ -82,7 +82,7 @@ INSERT INTO project (project_name, member_idx, project_description, project_star
 ('보안 강화 프로젝트', 5, '시스템 보안 취약점 분석 및 개선', '2023-05-01', '2023-11-30');
 
 -- Project_Member 테스트 데이터 삽입
-INSERT INTO project_member (member_idx, project_id) VALUES
+INSERT INTO project_member (member_idx, project_idx) VALUES
 (1, 1), (2, 1), (3, 1),
 (2, 2), (3, 2), (4, 2),
 (3, 3), (4, 3), (5, 3),
@@ -90,7 +90,7 @@ INSERT INTO project_member (member_idx, project_id) VALUES
 (1, 5), (2, 5), (5, 5);
 
 -- Task 테스트 데이터 삽입
-INSERT INTO task (task_name, task_description, project_id, priority, status, start_date, end_date, assigned_to) VALUES
+INSERT INTO task (task_name, task_description, project_idx, priority, status, start_date, end_date, assigned_to) VALUES
 ('요구사항 분석', '프로젝트 요구사항 수집 및 분석', 1, 'HIGH', 'TODO', '2023-01-01', '2023-01-15', 1),
 ('데이터베이스 설계', 'ERD 작성 및 데이터베이스 스키마 설계', 1, 'HIGH', 'IN_PROGRESS', '2023-01-16', '2023-01-31', 2),
 ('UI 디자인', '사용자 인터페이스 디자인 및 프로토타입 제작', 2, 'MEDIUM', 'TODO', '2023-02-15', '2023-03-15', 3),

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 public class Project {
 
     @Id
@@ -21,7 +22,7 @@ public class Project {
     @Column(name = "project_name", nullable = false, length = 100)
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_idx", nullable = false)
     private Member author;
 

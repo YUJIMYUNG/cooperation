@@ -68,16 +68,16 @@ const Layout = () => {
 
 
 const root = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Suspense fallback={<Loading />}><ProjectPage /></Suspense>,
-      },
-    ],
-  },
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Suspense fallback={<Loading />}><ProjectPage /></Suspense>,
+        },
+      ],
+    },
   {
     path: '/create-project',
     element: <Layout />,
@@ -93,7 +93,7 @@ const root = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        index: true,
+        index: true,  
         element: <Suspense fallback={<Loading />}><ProjectForm /></Suspense>,
       },
     ],

@@ -1,9 +1,6 @@
 package com.project.cooperation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,8 +8,9 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectDTO {
+@ToString
+public class ProjectDto {
     private String title, description;
-    private int author;
+    private Long author, idx;
     private LocalDate startDate, endDate;
 }

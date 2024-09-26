@@ -4,7 +4,7 @@ import Dropdown from '../dropdown/dropdown';
 import DeleteConfirmModal from '../modal/deleteConfirmModal';
 import { useNavigate } from 'react-router-dom';
 
-export default function ProjectBlock({ idx, title, creator, description, startDate, endDate, onEdit, onDelete }){    
+export default function ProjectBlock({ idx, title, author, description, startDate, endDate, onEdit, onDelete }){    
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function ProjectBlock({ idx, title, creator, description, startDa
             <div className='h-20 border border-black w-full rounded-xl shadow-md drop-shadow-lg mt-5 cursor-pointer' onClick={()=>navigate(`/project/${idx}/tasks`)}>
                 <ProjectBlockInner 
                     title={title}
-                    creator={creator}
+                    author={author}
                     description={description}
                     startDate={startDate}
                     endDate={endDate}
