@@ -16,11 +16,13 @@ import DeleteConfirmModal from '../../components/modal/deleteConfirmModal';
 
 function Task() {
     const { idx } = useParams();
-    const idxN = Number(idx);
+    const idxN = idx? Number(idx) : undefined;
     const project = useSelector(state => state.projects.list.find(p => p.idx === idxN));
     // 샘플데이터
-    const [tasks, setTasks] = useState([]);
-
+    const tasks = useSelector(state => state.tasks.list);
+    const setTasks = () => {
+        console.log(123);
+    }
     // table에 보낼 check 여부 변서
     const [selectedTasks, setSelectedTasks] = useState({});
     const [isListView, setIsListView] = useState(true);

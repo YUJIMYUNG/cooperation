@@ -5,7 +5,7 @@ import Button from "../../atom/button";
 import ProjectBlock from "../../components/projects/projectBlock";
 import BodyHeader from "../../components/header/bodyHeader";
 import Search from "../../atom/search";
-import { fetchProjects, deleteProject, setCurrentPage } from "../../store/projectSlice";
+import { fetchProjects, deleteProject, setCurrentPage, clearError } from "../../store/projectSlice";
 
 export default function ProjectPage() {
     const navigate = useNavigate();
@@ -27,10 +27,10 @@ export default function ProjectPage() {
     }, [loadProjects]);
 
     useEffect(() => {
-        loadProjects();
-    }, [loadProjects]);
-
-
+        return () => {
+            dispatch(clearError());
+        };
+    }, [dispatch]);
 
     const createProjectHandler = () => {
         navigate("/create-project");

@@ -1,48 +1,83 @@
-// 리듀서 정의
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LOCAL_HOST } from '../constant/path';
 
-// // 비동기 액션 생성
-export const fetchProjects = createAsyncThunk('projects/fetchProjects', async ({page = 0, size = 5, sort="endDate"}) => {
-  const response = await fetch(LOCAL_HOST + `/api/projects?authorIdx=${1}&page=${page}&size=${size}&sort=${sort}`);
+// 에러 처리 헬퍼 함수
+const handleError = async (response) => {
   if (!response.ok) {
-    throw new Error(response.json());
+    const errorData = await response.json();
+    throw { error: errorData.error, message: errorData.message };
   }
-  const data = await response.json();
-  return data;
-
-});
-
-export const createProject = createAsyncThunk('projects/createProject', async (dto) => {
-  const response = await fetch(`${LOCAL_HOST}/api/projects`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto)
-  });
-  const data = await response.json();
-  return data;
-});
-
-export const updateProject = createAsyncThunk('projects/updateProject', async ({ idx, updates }) => {
-  const response = await fetch(`${LOCAL_HOST}/api/projects/${idx}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updates)
-  });
   return response.json();
-});
+};
 
-export const deleteProject = createAsyncThunk('projects/deleteProject', async (idx) => {
-  await fetch(`${LOCAL_HOST}/api/projects/${idx}`, { method: 'DELETE' });
-  return idx;
-});
+export const fetchProjects = createAsyncThunk(
+  'projects/fetchProjects',
+  async ({page = 0, size = 5, sort="endDate"}, { rejectWithValue }) => {
+    try {
+      const response = await fetch(LOCAL_HOST + `/api/projects?authorIdx=${1}&page=${page}&size=${size}&sort=${sort}`);
+      return handleError(response);
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const createProject = createAsyncThunk(
+  'projects/createProject',
+  async (dto, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${LOCAL_HOST}/api/projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dto)
+      });
+      return handleError(response);
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const updateProject = createAsyncThunk(
+  'projects/updateProject',
+  async ({ idx, updates }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${LOCAL_HOST}/api/projects/${idx}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      return handleError(response);
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const deleteProject = createAsyncThunk(
+  'projects/deleteProject',
+  async (idx, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${LOCAL_HOST}/api/projects/${idx}`, { method: 'DELETE' });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw errorData;
+      }
+      return idx;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
 
 const projectsSlice = createSlice({
   name: 'projects',
   initialState: {
     list: [],
-    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+    status: 'idle',
     error: null,
+    errorMessage: null,
+    fieldErrors: {},
     currentPage: 0,
     totalPages: 0,
     totalElements: 0,
@@ -51,17 +86,24 @@ const projectsSlice = createSlice({
   reducers: {
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
+      state.errorMessage = null;
+      state.fieldErrors = {};
     }
   },
   extraReducers: (builder) => {
     builder
-      // 프로젝트 패치
       .addCase(fetchProjects.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
+        state.errorMessage = null;
+        state.fieldErrors = {};
       })
       .addCase(fetchProjects.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.list = action.payload.content; // 페이지 내용
+        state.list = action.payload.content;
         state.totalPages = action.payload.totalPages;
         state.totalElements = action.payload.totalElements;
         state.currentPage = action.payload.number;
@@ -69,28 +111,45 @@ const projectsSlice = createSlice({
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload.error;
+        state.errorMessage = action.payload.message;
       })
-      // 프로젝트 생성
       .addCase(createProject.fulfilled, (state, action) => {
-        state.list.push(action.payload);
-        state.list.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+        state.list.unshift(action.payload);
+        if (state.list.length > state.pageSize) {
+          state.list.pop();
+        }
       })
-      // 프로젝트 수정
       .addCase(updateProject.fulfilled, (state, action) => {
         const index = state.list.findIndex(project => project.idx === action.payload.idx);
         if (index !== -1) {
-          state.list[index] = action.payload.updatedProject;
+          state.list[index] = action.payload;
         }
         state.list.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
       })
-      // 프로젝트 삭제
       .addCase(deleteProject.fulfilled, (state, action) => {
-        state.list = state.list.filter(project => project.id !== action.payload);
+        state.list = state.list.filter(project => project.idx !== action.payload);
       })
+      // 모든 rejected 케이스에 대한 공통 처리
+      .addMatcher(
+        action => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.status = 'failed';
+          state.error = action.payload.error;
+          state.errorMessage = action.payload.message;
+          // MethodArgumentNotValidException 처리
+          if (action.payload.message && action.payload.message.includes(': ')) {
+            state.fieldErrors = action.payload.message.split(', ').reduce((acc, curr) => {
+              const [field, message] = curr.split(': ');
+              acc[field] = message;
+              return acc;
+            }, {});
+          }
+        }
+      );
   }
-}); 
+});
 
-export const { setCurrentPage } = projectsSlice.actions;
+export const { setCurrentPage, clearError } = projectsSlice.actions;
 
 export default projectsSlice.reducer;
