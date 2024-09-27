@@ -5,34 +5,29 @@ import Button from "../../atom/button";
 import ProjectBlock from "../../components/projects/projectBlock";
 import BodyHeader from "../../components/header/bodyHeader";
 import Search from "../../atom/search";
-import { fetchProjects, deleteProject } from "../../store/projectSlice";
+import { fetchProjects, deleteProject, setCurrentPage } from "../../store/projectSlice";
 
 export default function ProjectPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const projects = useSelector(state => state.projects?.list ?? []);
+    const projects = useSelector(state => state.projects.list);
     const status = useSelector(state => state.projects.status);
     const error = useSelector(state => state.projects.error);
-    const totalPages = useSelector(state => state.projects?.totalPages ?? 0);
-
-    const [currentPage, setCurrentPage] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const currentPage = useSelector(state => state.projects.currentPage);
+    const totalPages = useSelector(state => state.projects.totalPages);
+    const pageSize = useSelector(state => state.projects.pageSize);
     
     useEffect(() => {
-        const abortController = new AbortController();
-        dispatch(fetchProjects({ page: currentPage, size: pageSize, signal: abortController.signal }));
-        
-        return () => {
-          abortController.abort();
-        };
-      }, [dispatch, currentPage, pageSize]);
+        dispatch(fetchProjects({ page: currentPage, size: pageSize }));
+    }, [dispatch, currentPage, pageSize]);
 
     useEffect(() => {
         return () => {
           dispatch({ type: 'projects/resetState' });
         };
       }, [dispatch]);
+
 
     const createProjectHandler = () => {
         navigate("/create-project");
@@ -48,7 +43,7 @@ export default function ProjectPage() {
     }
     // 페이징
     const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
+        dispatch(setCurrentPage(newPage));
     }
     
     if (status === 'loading') return <div>Loading...</div>;
@@ -88,13 +83,30 @@ export default function ProjectPage() {
                     />
                 ))}
             </div>
-            <div className="flex justify-center items-center gap-5">
-                {/* 페이지네이션 컨트롤 */}
+            <div className="flex justify-center items-center gap-5 mt-4 mb-4">
+                <button 
+                    onClick={() => handlePageChange(currentPage - 1)} 
+                    disabled={currentPage === 0}
+                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                    이전
+                </button>
                 {Array.from({ length: totalPages }, (_, i) => (
-                    <button key={i} onClick={() => handlePageChange(i)}>
+                    <button 
+                        key={i} 
+                        onClick={() => handlePageChange(i)}
+                        className={`px-4 py-2 rounded ${currentPage === i ? 'bg-yellow-400 hover:bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+                    >
                         {i + 1}
                     </button>
                 ))}
+                <button 
+                    onClick={() => handlePageChange(currentPage + 1)} 
+                    disabled={currentPage === totalPages - 1}
+                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                    다음
+                </button>
             </div>
         </div>
     )

@@ -3,10 +3,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LOCAL_HOST } from '../constant/path';
 
 // // 비동기 액션 생성
-export const fetchProjects = createAsyncThunk('projects/fetchProjects', async ({page = 0, size = 10}) => {
-  const response = await fetch(LOCAL_HOST + `/api/projects?authorIdx=${1}&page=${page}&size=${size}`);
+export const fetchProjects = createAsyncThunk('projects/fetchProjects', async ({page = 0, size = 5, sort="endDate"}) => {
+  const response = await fetch(LOCAL_HOST + `/api/projects?authorIdx=${1}&page=${page}&size=${size}&sort=${sort}`);
   if (!response.ok) {
-    throw new Error('서버 응답 오류');
+    throw new Error(response.json());
   }
   const data = await response.json();
   return data;
@@ -23,14 +23,14 @@ export const createProject = createAsyncThunk('projects/createProject', async (d
   return data;
 });
 
-// export const updateProject = createAsyncThunk('projects/updateProject', async ({ id, updates }) => {
-//   const response = await fetch(`https://api.example.com/projects/${id}`, {
-//     method: 'PUT',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify(updates)
-//   });
-//   return response.json();
-// });
+export const updateProject = createAsyncThunk('projects/updateProject', async ({ idx, updates }) => {
+  const response = await fetch(`${LOCAL_HOST}/api/projects/${idx}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates)
+  });
+  return response.json();
+});
 
 // export const deleteProject = createAsyncThunk('projects/deleteProject', async (id) => {
 //   await fetch(`https://api.example.com/projects/${id}`, { method: 'DELETE' });
@@ -42,9 +42,17 @@ const projectsSlice = createSlice({
   initialState: {
     list: [],
     status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null
+    error: null,
+    currentPage: 0,
+    totalPages: 0,
+    totalElements: 0,
+    pageSize: 5
   },
-  reducers: {},
+  reducers: {
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       // 프로젝트 패치
@@ -56,8 +64,8 @@ const projectsSlice = createSlice({
         state.list = action.payload.content; // 페이지 내용
         state.totalPages = action.payload.totalPages;
         state.totalElements = action.payload.totalElements;
-        state.size = action.payload.size;
-        state.number = action.payload.number; // 현재 페이지 번호
+        state.currentPage = action.payload.number;
+        state.pageSize = action.payload.size;
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.status = 'failed';
@@ -66,19 +74,23 @@ const projectsSlice = createSlice({
       // 프로젝트 생성
       .addCase(createProject.fulfilled, (state, action) => {
         state.list.push(action.payload);
+        state.list.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
       })
-      // // 프로젝트 수정
-      // .addCase(updateProject.fulfilled, (state, action) => {
-      //   const index = state.list.findIndex(project => project.id === action.payload.id);
-      //   if (index !== -1) {
-      //     state.list[index] = action.payload;
-      //   }
-      // })
+      // 프로젝트 수정
+      .addCase(updateProject.fulfilled, (state, action) => {
+        const index = state.list.findIndex(project => project.idx === action.payload.idx);
+        if (index !== -1) {
+          state.list[index] = action.payload.updatedProject;
+        }
+        state.list.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+      });
       // // 프로젝트 삭제
       // .addCase(deleteProject.fulfilled, (state, action) => {
       //   state.list = state.list.filter(project => project.id !== action.payload);
       // });
   }
 }); 
+
+export const { setCurrentPage } = projectsSlice.actions;
 
 export default projectsSlice.reducer;
