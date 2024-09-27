@@ -25,11 +25,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     //UserDetails = MemberDTO 역할, 사용자의 정보를 담는 인터페이스
     //로그인을 처리할 때 동작 (security 권한 처리)
     @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         log.info("-----동작 확인 여부-------");
 
-        Member member = memberRepository.getWithRoles(id);
+        Member member = memberRepository.getWithRoles(username);
 
         if(member == null){
             throw new UsernameNotFoundException("Not Found");
