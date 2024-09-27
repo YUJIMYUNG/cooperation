@@ -5,6 +5,7 @@ import Input from '../../atom/Input';
 import ModalTop from './modalTop';
 import ModalBottom from './modalBottom';
 import ModalBody from './modalBody';
+import ErrorMessage from '../../atom/errorMessage';
 
 
 const RegisterModal = ({handleModal, switchToLogin}) => {
@@ -165,12 +166,12 @@ const RegisterModal = ({handleModal, switchToLogin}) => {
                             <div className='h-10'>
                                 <div>
                                     <Input placeholder={"비밀번호를 입력하세요.(영어 소문자, 숫자, 특수문자 혼용 8~20자)"} type="password" onChange={(e)=>setUserPassword(e.target.value)}  onBlur={()=>(validValue("password"))} />
-                                </div>
-                                <div className="pt-1 pl-1">
                                     {errorMessages.userPassword && (
-                                        <p className="font-nanum-squareL text-xs text-red-600">{errorMessages.userPassword}</p>
+                                        <ErrorMessage text={errorMessages.userPassword} />
                                     )}
                                 </div>
+                                
+
                             </div>
 
                             {/* 비밀번호 확인 input, 에러메세지 영역 */}

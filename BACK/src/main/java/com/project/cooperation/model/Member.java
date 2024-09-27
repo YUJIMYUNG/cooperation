@@ -39,6 +39,8 @@ public class Member {
     @Builder.Default
     private List<Role> memberRoleList = new ArrayList<>();
 
+    private Role role;
+
     public void addRole(Role role){
         memberRoleList.add(role);
     }

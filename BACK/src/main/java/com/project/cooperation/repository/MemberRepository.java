@@ -15,4 +15,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @EntityGraph(attributePaths = {"memberRoleList"})
     @Query("select m from Member m where m.id = :id")
     Member getWithRoles(@Param("id") String id);
+
+    //로그인 ID를 갖는 객체가 존재하는지에 대한 여부 -> 존재하면 true반환 (중복검사)
+    boolean existsByLoninId(String id);
+
+    //로그인 ID를 갖는 객체 반환
+    Member findByLoginId(String id);
+
 }
+
