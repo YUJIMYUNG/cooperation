@@ -1,58 +1,96 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createProject, updateProject } from '../../store/projectSlice';
+import { createProject, fetchProjects, updateProject } from '../../store/projectSlice';
 import Button from '../../atom/button';
 import InputModules from '../../components/modules/inputModules';
 import DatePickerModules from '../../components/modules/datePickerModules';
 import BodyHeader from "../../components/header/bodyHeader";
 
 export default function ProjectForm() {
-    const { idx } = useParams(); // URL에서 프로젝트 ID를 가져옵니다.
-    const project = useSelector(state => state.projects.list.find(p => p.idx.toString() === idx));
-
+    const { idx } = useParams();
+    const idxN = idx ? Number(idx) : undefined;
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const project = useSelector(state => 
+        idxN !== undefined ? state.projects.list.find(p => p && p.idx === idxN) : undefined
+    );
+    const projectsStatus = useSelector(state => state.projects.status);
+
     const [formData, setFormData] = useState({
-        idx:'',
+        idx: '',
         title: '',
         description: '',
-        author: '',
         startDate: '',
         endDate: ''
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (idx && project) {
+        if (projectsStatus === 'idle' || (idxN !== undefined && !project)) {
+            dispatch(fetchProjects({page: 0, size: 10, sort: "endDate"}));
+        }
+    }, [dispatch, projectsStatus, idxN, project]);
+
+    useEffect(() => {
+        if (project) {
             setFormData({
-                idx: idx || '',
+                idx: project.idx,
                 title: project.title || '',
                 description: project.description || '',
-                author: project.creator || '',
                 startDate: project.startDate || '',
                 endDate: project.endDate || ''
             });
         }
-    }, [idx, project]);
+    }, [project]);
 
-
-
-    const handleInputChange = (e) => {
+    const handleInputChange = useCallback((e) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
-    };
+    }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
-        console.log(formData);
-        if(!idx){
-            dispatch(createProject(formData));
-        }
-        
-        navigate('/');
-    };
+        if (isSubmitting) return;
 
+        setIsSubmitting(true);
+
+        const submitData = {
+            ...formData,
+            author: 1
+        };
+
+        const submitAction = idxN === undefined
+            ? createProject(submitData)
+            : updateProject({ idx: idxN, updates: submitData });
+
+            dispatch(submitAction)
+            .then(() => {
+                navigate('/');
+            })
+            .catch((error) => {
+                console.error('Error submitting project:', error);
+                setIsSubmitting(false);
+            });
+    }, [dispatch, formData, idxN, navigate, isSubmitting]);
+
+    const isFormChanged = project ? 
+        JSON.stringify(formData) !== JSON.stringify({
+            idx: project.idx,
+            title: project.title || '',
+            description: project.description || '',
+            startDate: project.startDate || '',
+            endDate: project.endDate || ''
+        }) : false;
+
+    if (projectsStatus === 'loading' || (idxN !== undefined && !project)) {
+        return <div>Loading...</div>;
+    }
+    
+    if (idxN !== undefined && projectsStatus === 'succeeded' && !project) {
+        return <div>Project not found</div>;
+    }
     return (
         <div className="w-11/12 mx-auto">
             <BodyHeader title={idx ? "프로젝트 수정" : "프로젝트 생성"} />
@@ -65,7 +103,12 @@ export default function ProjectForm() {
                 </div>
                 {/* 다른 필드들도 위와 같은 방식으로 추가 */}
                 <div className="flex items-center justify-between">
-                    <Button text={idx ? "프로젝트 수정" : "프로젝트 생성"} color="yellow" type="submit" />
+                    <Button 
+                        text={isSubmitting ? "처리 중..." : (idx ? "프로젝트 수정" : "프로젝트 생성")} 
+                        color="yellow" 
+                        type="submit" 
+                        disabled={isSubmitting || (idx && !isFormChanged)}
+/>
                 </div>
             </form>
         </div>

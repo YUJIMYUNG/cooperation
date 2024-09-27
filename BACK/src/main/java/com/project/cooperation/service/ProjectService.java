@@ -5,13 +5,18 @@ import com.project.cooperation.model.Member;
 import com.project.cooperation.model.Project;
 import com.project.cooperation.repository.MemberRepository;
 import com.project.cooperation.repository.ProjectRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -26,10 +31,12 @@ public class ProjectService {
      * @param pageable
      * @return
      */
-    public ResponseEntity<Page<ProjectDto>> selectAllProject(Long authorIdx, Pageable pageable) {
-        Page<Project> projects = projectRepository.findAllByAuthor_Idx(authorIdx, pageable);
-        Page<ProjectDto> projectDTOs = projects.map(this::convertToDTO);
-        return new ResponseEntity<>(projectDTOs, HttpStatus.OK);
+    @Transactional(readOnly = true)
+    public Page<ProjectDto> selectAllProject(Long authorIdx, Pageable pageable) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "endDate");
+        Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<Project> projects = projectRepository.findAllByAuthor_Idx(authorIdx,pageableWithSort);
+        return projects.map(this::convertToDTO);
     }
 
     /**
@@ -37,12 +44,29 @@ public class ProjectService {
      * @param dto
      * @return
      */
-    public ResponseEntity<ProjectDto> create(ProjectDto dto){
+    @Transactional
+    public ProjectDto create(ProjectDto dto){
         Project project = convertToEntity(dto);
-        log.info("project : " + project);
         Project savedDto = projectRepository.save(project);
-        log.info("savedDto : " + savedDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(savedDto));
+        return convertToDTO(savedDto);
+    }
+
+    /**
+     * 프로젝스 수정
+     * @param idx
+     * @param dto
+     * @return
+     */
+    public ProjectDto update(Long idx, ProjectDto dto){
+        if (!dto.getAuthor().equals(1L)) {
+            throw new IllegalArgumentException("로그인 정보가 잘못되었습니다.");
+        }
+
+        Project project = projectRepository.findById(idx)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + idx));
+        project.updateProject(dto.getTitle(), dto.getDescription(),dto.getStartDate(), dto.getEndDate());
+        Project updatedProject = projectRepository.save(project);
+        return convertToDTO(updatedProject);
     }
 
     /**
