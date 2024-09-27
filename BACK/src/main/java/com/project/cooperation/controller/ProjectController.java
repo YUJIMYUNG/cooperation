@@ -44,4 +44,10 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedProject);
     }
 
+    @DeleteMapping("/{idx}")
+    public ResponseEntity<String> delete(@PathVariable Long idx){
+        projectService.delete(idx);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("성공적으로 삭제되었습니다.");
+    }
+
 }

@@ -35,7 +35,7 @@ public class ProjectService {
     public Page<ProjectDto> selectAllProject(Long authorIdx, Pageable pageable) {
         Sort sort = Sort.by(Sort.Direction.DESC, "endDate");
         Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-        Page<Project> projects = projectRepository.findAllByAuthor_Idx(authorIdx,pageableWithSort);
+        Page<Project> projects = projectRepository.findAllByAuthor_Idx(authorIdx, pageableWithSort);
         return projects.map(this::convertToDTO);
     }
 
@@ -63,10 +63,16 @@ public class ProjectService {
         }
 
         Project project = projectRepository.findById(idx)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + idx));
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + idx));
         project.updateProject(dto.getTitle(), dto.getDescription(),dto.getStartDate(), dto.getEndDate());
         Project updatedProject = projectRepository.save(project);
         return convertToDTO(updatedProject);
+    }
+
+    public void delete(Long idx){
+        Project project = projectRepository.findById(idx)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + idx));
+        projectRepository.deleteById(idx);
     }
 
     /**
