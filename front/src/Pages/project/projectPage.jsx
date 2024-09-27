@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../atom/button";
@@ -17,16 +17,19 @@ export default function ProjectPage() {
     const currentPage = useSelector(state => state.projects.currentPage);
     const totalPages = useSelector(state => state.projects.totalPages);
     const pageSize = useSelector(state => state.projects.pageSize);
-    
-    useEffect(() => {
+
+    const loadProjects = useCallback(() => {
         dispatch(fetchProjects({ page: currentPage, size: pageSize }));
     }, [dispatch, currentPage, pageSize]);
+    
+    useEffect(() => {
+        loadProjects();
+    }, [loadProjects]);
 
     useEffect(() => {
-        return () => {
-          dispatch({ type: 'projects/resetState' });
-        };
-      }, [dispatch]);
+        loadProjects();
+    }, [loadProjects]);
+
 
 
     const createProjectHandler = () => {
@@ -37,9 +40,13 @@ export default function ProjectPage() {
         navigate(`/edit-project/${idx}`);
     }
 
-    const deleteProjectHandler = (id) => {
-        console.log(id);
-            // dispatch(deleteProject(id));
+    const deleteProjectHandler = async (idx) => {
+        try {
+            await dispatch(deleteProject(idx)).unwrap();
+            loadProjects();
+        } catch (error) {
+            console.error("Failed to delete project:", error);
+        }
     }
     // 페이징
     const handlePageChange = (newPage) => {
