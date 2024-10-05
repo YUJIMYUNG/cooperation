@@ -37,8 +37,10 @@ public class Member {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private List<Role> memberRoleList = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public void addRole(Role role){

@@ -6,6 +6,7 @@ import ModalTop from "./modalTop";
 import ModalBottom from "./modalBottom";
 import ModalBody from "./modalBody";
 import { useState } from "react";
+import ErrorMessage from '../../atom/errorMessage';
 
 
 //로그인 모달창
@@ -63,18 +64,12 @@ const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal}) => {
                     {/* modal body section */}
                     <ModalBody>
                         {/* 로그인 input, errorMessage 영역 */}
-                        <div className="w-400 h-48">
+                        <div className="w-400 h-48 grid gap-6">
                             {/* 아이디, 비밀번호, input 영역 */}
-                            <div className="grid gap-6">
-                                <Input placeholder={"아이디를 입력하세요."} value={userId} onChange={handleUserIdChange}></Input>
-                                <Input placeholder={"비밀번호를 입력하세요."} value={userPassword} onChange={hadleUserPwdChange} type="password"></Input>
-                            </div>
+                            <Input placeholder={"아이디를 입력하세요."} value={userId} onChange={handleUserIdChange}></Input>
+                            <Input placeholder={"비밀번호를 입력하세요."} value={userPassword} onChange={hadleUserPwdChange} type="password"></Input>
                             {/* 오류메세지 */}
-                            <div className="pt-2 pl-1">
-                                {errorMessage &&(
-                                    <p className="font-nanum-squareL text-xs text-red-600">{errorMessage}</p>
-                                )}
-                            </div>
+                            <ErrorMessage text={errorMessage} />
                         </div>
 
                         {/* 로그인 버튼 */}

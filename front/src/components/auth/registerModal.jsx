@@ -44,6 +44,11 @@ const RegisterModal = ({handleModal, switchToLogin}) => {
         }
     }
 
+    //회원가입 버튼
+    const handleJoinButton = (e) => {
+        const clickJoinButton = e.target.value;
+    }
+
     //유효성 검사
     const validValue = (type) => {
 
@@ -117,11 +122,10 @@ const RegisterModal = ({handleModal, switchToLogin}) => {
                                 {/* 아이디 input */}
                                 <div>
                                     <Input placeholder={"아이디를 입력하세요. (영어 소문자, 숫자 입력 가능 8~15자"}  onChange={(e)=>setUserId(e.target.value)} onBlur={()=>validValue("id")}/>
-                                </div>
-                                {/* 아이디 유효성검사 errorMessage */}
-                                <div className="pt-1 pl-1">
+                                
+                                    {/* 아이디 유효성검사 errorMessage */}
                                     {errorMessages.userId && (
-                                        <p className="font-nanum-squareL text-xs text-red-600">{errorMessages.userId}</p>
+                                        <ErrorMessage text={errorMessages.userId}/>
                                     )}
                                 </div>
                             </div>
@@ -154,10 +158,8 @@ const RegisterModal = ({handleModal, switchToLogin}) => {
                             <div className='h-10'>
                                 <div>
                                     <Input placeholder={"닉네임을 입력하세요.(영어, 숫자 10자 이내, 한글 5자 이내)"} onChange={(e)=>setUserNickname(e.target.value)} onBlur={()=>(validValue("nickname"))} />
-                                </div>
-                                <div className="pt-1 pl-1"> 
                                     {errorMessages.userNickname && (
-                                        <p className="font-nanum-squareL text-xs text-red-600">{errorMessages.userNickname}</p>
+                                        <ErrorMessage text={errorMessages.userNickname}/>
                                     )}
                                 </div>
                             </div>
@@ -178,17 +180,16 @@ const RegisterModal = ({handleModal, switchToLogin}) => {
                             <div className='pb-3 h-10'>
                                 <div className=''>
                                     <Input placeholder={"비밀번호를 확인 해주세요."} type="password"  onChange={(e)=>setUserPasswordConfirm(e.target.value)} onBlur={()=>validValue("passwordConfirm")}/>
-                                </div>
-                                <div className="pt-1 pl-1">
-                                    <p>{errorMessages.userPasswordConfirm && (
-                                        <p className="font-nanum-squareL text-xs text-red-600">{errorMessages.userPasswordConfirm}</p>
-                                    )}</p>
+                                    {errorMessages.userPasswordConfirm && (
+                                        <ErrorMessage  text={errorMessages.userPasswordConfirm}/>
+                                    )}
                                 </div>
                             </div>
                             
                             {/* 회원가입 버튼 */}
                             <div>
                                 <Button color={"yellow"} onClickHandler={handleModal} text={"회원가입"} type={"button"} />
+                                {/* 에러메세지 영역 */}
                             </div>
                         </div>
                     </ModalBody>

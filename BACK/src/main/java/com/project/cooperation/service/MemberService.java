@@ -24,7 +24,7 @@ public class MemberService{
 
     //로그인 ID 중복검사 메서드
     public boolean checkLoginIdDuplicate(String id){
-        return memberRepository.existsByLoninId(id);
+        return memberRepository.existsById(id);
     }
 
     //회원가입 메서드
@@ -35,7 +35,7 @@ public class MemberService{
     //로그인 메서드
 
     public Member login(LoginRequest loginRequest) {
-        Member findMember = memberRepository.findByLoginId(loginRequest.getId());
+        Member findMember = memberRepository.findById(loginRequest.getId());
 
         if(findMember == null) {
             return null;
