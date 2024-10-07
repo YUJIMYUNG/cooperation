@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "project")
@@ -35,10 +37,23 @@ public class Project {
     @Column(name = "project_end_date", nullable = false)
     private LocalDate endDate;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Task> tasks = new ArrayList<>();
+
     public void updateProject(String title, String description, LocalDate startDate, LocalDate endDate){
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+    public void addTask(Task task) {
+        tasks.add(task);
+        task.setProject(this);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+        task.setProject(null);
     }
 }

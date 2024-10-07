@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ProjectDto {
+public class ProjectDTO {
     
     private Long idx;
 

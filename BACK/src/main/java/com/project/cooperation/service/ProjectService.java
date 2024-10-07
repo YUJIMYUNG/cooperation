@@ -1,6 +1,6 @@
 package com.project.cooperation.service;
 
-import com.project.cooperation.dto.ProjectDto;
+import com.project.cooperation.dto.ProjectDTO;
 import com.project.cooperation.model.Member;
 import com.project.cooperation.model.Project;
 import com.project.cooperation.repository.MemberRepository;
@@ -12,9 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +29,7 @@ public class ProjectService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ProjectDto> selectAllProject(Long authorIdx, Pageable pageable) {
+    public Page<ProjectDTO> selectAllProject(Long authorIdx, Pageable pageable) {
         Sort sort = Sort.by(Sort.Direction.DESC, "endDate");
         Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         Page<Project> projects = projectRepository.findAllByAuthor_Idx(authorIdx, pageableWithSort);
@@ -45,7 +42,7 @@ public class ProjectService {
      * @return
      */
     @Transactional
-    public ProjectDto create(ProjectDto dto){
+    public ProjectDTO create(ProjectDTO dto){
         Project project = convertToEntity(dto);
         Project savedDto = projectRepository.save(project);
         return convertToDTO(savedDto);
@@ -57,7 +54,7 @@ public class ProjectService {
      * @param dto
      * @return
      */
-    public ProjectDto update(Long idx, ProjectDto dto){
+    public ProjectDTO update(Long idx, ProjectDTO dto){
         if (!dto.getAuthor().equals(1L)) {
             throw new IllegalArgumentException("로그인 정보가 잘못되었습니다.");
         }
@@ -80,8 +77,8 @@ public class ProjectService {
      * @param project
      * @return
      */
-    private ProjectDto convertToDTO(Project project) {
-        return ProjectDto.builder()
+    private ProjectDTO convertToDTO(Project project) {
+        return ProjectDTO.builder()
                 .author(project.getAuthor().getIdx())
                 .idx(project.getIdx())
                 .title(project.getTitle())
@@ -96,7 +93,7 @@ public class ProjectService {
      * @param projectDto
      * @return
      */
-    private Project convertToEntity(ProjectDto projectDto){
+    private Project convertToEntity(ProjectDTO projectDto){
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Member Not Found"));
 
