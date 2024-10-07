@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString(exclude = "memberRoleList")
+@ToString
 public class Member {
 
     @Id
@@ -35,20 +35,13 @@ public class Member {
     @Column(name = "member_password", nullable = false)
     private String password;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private List<Role> memberRoleList = new ArrayList<>();
+//    @ElementCollection(fetch = FetchType.LAZY)
+//    @Builder.Default
+//    @Enumerated(EnumType.STRING)
+//    private List<Role> memberRoleList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public void addRole(Role role){
-        memberRoleList.add(role);
-    }
-
-    public void clearRole(){
-        memberRoleList.clear();
-    }
 
 }

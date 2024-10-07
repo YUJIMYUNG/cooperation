@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService{
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     //로그인 ID 중복검사 메서드
     public boolean checkLoginIdDuplicate(String id){
@@ -28,12 +31,22 @@ public class MemberService{
     }
 
     //회원가입 메서드
-    public void join(JoinRequest joinRequest){
+//    public void join(JoinRequest joinRequest){
+//        memberRepository.save(joinRequest.toEntity());
+//    }
+
+    //BCryptPasswordEncoder를 통해서 암호화 작업을 추가한 회원가입 메서드
+    public void securityJoin(JoinRequest joinRequest){
+        if(memberRepository.existsById(joinRequest.getId())){
+            return;
+        }
+
+        joinRequest.setPassword(bCryptPasswordEncoder.encode(joinRequest.getPassword()));
+
         memberRepository.save(joinRequest.toEntity());
     }
 
     //로그인 메서드
-
     public Member login(LoginRequest loginRequest) {
         Member findMember = memberRepository.findById(loginRequest.getId());
 
@@ -41,7 +54,7 @@ public class MemberService{
             return null;
         }
 
-        if(findMember.getPassword().equals(loginRequest.getPassword())) {
+        if(!findMember.getPassword().equals(loginRequest.getPassword())) {
             return null;
         }
 
@@ -57,8 +70,6 @@ public class MemberService{
         return findMember.orElse(null);
     }
 
-    // BCryptPasswordEncoder를 통해 비밀번호 암호와 작업에 추가한 회원가입 로직
-    //public void securityJoin(JoinRequest)
 
 
 }

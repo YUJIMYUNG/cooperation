@@ -41,19 +41,19 @@ public class MemberDTO extends User {
 
 
     // security로 jwt 문자열을 만들어서 주고받는데, 데이터가 필요하고 그에 대한 처리를 하기 위한 메서드를 만든다.
-    public Map<String, Object> getClaims() {
-
-        Map<String, Object> dataMap = new HashMap<>();
-
-        dataMap.put("idx", idx);
-        dataMap.put("id", id);
-        dataMap.put("email", email);
-        dataMap.put("nickname", nickname);
-        dataMap.put("password", password);
-        dataMap.put("roleNames", roleNames);
-
-        return dataMap;
-    }
+//    public Map<String, Object> getClaims() {
+//
+//        Map<String, Object> dataMap = new HashMap<>();
+//
+//        dataMap.put("idx", idx);
+//        dataMap.put("id", id);
+//        dataMap.put("email", email);
+//        dataMap.put("nickname", nickname);
+//        dataMap.put("password", password);
+//        dataMap.put("roleNames", roleNames);
+//
+//        return dataMap;
+//    }
 
 
 

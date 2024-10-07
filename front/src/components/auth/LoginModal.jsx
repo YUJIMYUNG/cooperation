@@ -7,10 +7,11 @@ import ModalBottom from "./modalBottom";
 import ModalBody from "./modalBody";
 import { useState } from "react";
 import ErrorMessage from '../../atom/errorMessage';
+import { LOCAL_HOST } from "../../constant/path";
 
 
 //로그인 모달창
-const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal}) => {
+const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal, onClickLogin, loginErrorMessage}) => {
 
     const [userId, setUserId] = useState(""); //아이디 입력값
     const [userPassword, setUserPassword] = useState(""); //비밀번호 입력값
@@ -30,28 +31,35 @@ const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal}) => {
         setErrorMessage(""); //입력 중일 떄에는 에러 메세지 안보이게
     }
 
+    // 에러 처리 헬퍼 함수
+    const handleError = async (response) => {
+        if (!response.ok) {
+        const errorData = await response.json();
+        throw { error: errorData.error, message: errorData.message };
+        }
+        return response.json();
+    };
+  
+
     //로그인, 비밀번호 유효성 검사 
     const handleLogin = () => {
         if(!userId || !userPassword) { //아이디에 값이 없거나, 비밀번호에 값이 없거나
             setErrorMessage("아이디 혹은 비밀번호를 입력해주세요.");
             return;
         }
-    
-
         // 아이디, 비번 호출 및 DB 회원가입 정보와 비교
-        // const isLoginValid = userId === "validUser" && userPassword === "validPassword";
+        onClickLogin(userId, userPassword);
 
-        // if(!isLoginValid){
-        //     setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
-        //     return;
-        // }
-
-        //성공시 로그인
-        //handleModal();
+        if(loginErrorMessage){
+            console.log(2);
+            setErrorMessage("아이디 혹은 비밀번호가 일치하지 않습니다.");
+        }
+        
+       
     }
      
     return (
-        //handleModal -> App.js에 명시해놓은 setModalOpen(false)값을 갖다 씀
+        //handleModal ->root.js에 명시해놓은 setModalOpen(false)값을 갖다 씀
         <div handleModal={handleModal}>
             <AuthSection>
 

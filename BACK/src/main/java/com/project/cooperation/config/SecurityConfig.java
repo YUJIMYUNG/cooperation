@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 하단에서 정의한 cors를 설정함
                 .formLogin(config ->{
                     config.loginPage("/api/member/login");//로그인페이지
+                    config.usernameParameter("id");
+                    config.passwordParameter("password");
                     config.successHandler(new APILoginSuccessHandler());//성공하면 동작하게 하는 기능
                     config.failureHandler(new APILoginFailHandler());//로그인 실패하면 동작하게 하는 기능
                 })

@@ -1,19 +1,36 @@
 package com.project.cooperation.security;
 
 import com.project.cooperation.model.Member;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
+@ToString
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
     Member member;
+
+    public UserDetails(Member member){
+        this.member = member;
+    }
 
 
     //현재 member의 role을 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Collection<GrantedAuthority> collect = new ArrayList<GrantedAuthority>();
+        collect.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return "ROLE_" + member.getRole();
+            }
+        });
+//		System.out.println(collect);
+        return collect;
     }
 
     @Override

@@ -6,6 +6,7 @@ import RegisterModal from '../auth/registerModal';
 import FindIdPwdModal from '../auth/findIdPwdModal';
 import LoginModal from '../auth/LoginModal';
 import Loading from '../../atom/loading';
+import { LOCAL_HOST } from '../../constant/path';
 
 const ProjectPage = lazy(() => import ('../../Pages/project/projectPage'));
 const ProjectForm = lazy(() => import('../../Pages/project/projectForm'));
@@ -19,14 +20,73 @@ const MyPageNav =lazy(()=>import('../mypages/myPageNav'))
 const Layout = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalType, setModalType] = useState("login");
+    const [loginErrorMessage, setLoginErrorMessage] = useState(false);
+    
   
     useEffect(() => {
-      setModalOpen(true);
-    }, []);
-  
+      console.log(localStorage.getItem("user"));
+      //local storage에 값이 있냐없냐 여부를 확인하고
+      if(localStorage.getItem("user")){
+        console.log(3)
+        setModalOpen(false);
+      }else{
+        setModalOpen(true);
+      }
+    },[]);
+
+    //모달창 띄우는 함수
     const handleModal = () => {
-      setModalOpen(false);
+      
+      //모달창 띄우기
+       setModalOpen(false);
     };
+
+
+    
+    //로그인 버튼 함수
+    const onClickLogin =  async (userId, userPassword) => {
+      try {
+        const formData = new URLSearchParams();
+        formData.append('id', userId);       // SecurityConfig의 usernameParameter와 일치
+        formData.append('password', userPassword);
+
+        //백으로 로그인 정보 보내주기
+        console.log(formData);
+        const response = await fetch(`${LOCAL_HOST}/api/member/login`,{
+            method : 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body : formData.toString()
+        })
+        
+        //백에서 json으로 받은 객체 불러오기
+        const data = await response.json();
+        console.log(data.nickname)
+
+        if(!data.nickname && !data.email && !data.idx){
+          console.log(2);
+          setLoginErrorMessage(true);
+        } else{
+          console.log(1)
+          localStorage.clear()
+          localStorage.setItem('user', JSON.stringify(data));
+          console.log(localStorage.getItem("user"));
+
+          //성공하면 모달창 닫기
+          setModalOpen(false);
+
+          //성공하면 에러메세지도 안보이게
+          setLoginErrorMessage(false);
+        }
+        
+        
+
+      } catch (error) {
+        console.log("?")
+
+      }  
+    
+
+    }
   
     const switchToRegister = () => {
       setModalType("register");
@@ -44,7 +104,7 @@ const Layout = () => {
   
     if (modalType === "login") {
       modalContent = (
-        <LoginModal handleModal={handleModal} switchToRegister={switchToRegister} switchToFindIdPwd={switchToFindIdPwd} /> 
+        <LoginModal handleModal={handleModal} switchToRegister={switchToRegister} switchToFindIdPwd={switchToFindIdPwd} onClickLogin={onClickLogin} loginErrorMessage={loginErrorMessage}/> 
       );
     } else if (modalType === "register") {
       modalContent = (
