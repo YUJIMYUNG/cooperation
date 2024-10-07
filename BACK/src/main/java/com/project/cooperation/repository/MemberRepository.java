@@ -17,10 +17,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member getWithRoles(@Param("id") String id);
 
     //로그인 ID를 갖는 객체가 존재하는지에 대한 여부 -> 존재하면 true반환 (중복검사)
-    boolean existsByLoninId(String id);
+    boolean existsById(String id);
 
     //로그인 ID를 갖는 객체 반환
-    Member findByLoginId(String id);
+    Member findById(String id);
 
     // idx를 가지고 유저 찾기
     Optional<Member> findByIdx(Long idx);
