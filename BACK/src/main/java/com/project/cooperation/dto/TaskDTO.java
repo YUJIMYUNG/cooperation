@@ -26,6 +26,5 @@ public class TaskDTO {
     private Long assignedToIdx;
 
     // 추가 필드: 클라이언트에게 유용할 수 있는 정보
-    private String projectName;
     private String assignedToName;
 }

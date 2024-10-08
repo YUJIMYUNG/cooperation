@@ -35,9 +35,9 @@ const TaskCard = ({ task, onClick, onEdit, onDelete, openTaskForm }) => {
                 <div className="flex justify-between">
                     <h3 className="font-bold">{task.taskName}</h3>
                     <div className="relative">
-                        <p className="align-top font-bold" onClick={e => toggleDropdown(e, task.taskIdx)}>···</p>
+                        <p className="align-top font-bold" onClick={e => toggleDropdown(e, task.idx)}>···</p>
                         <Dropdown 
-                            isOpen={openDropdownIndex === task.taskIdx} 
+                            isOpen={openDropdownIndex === task.idx} 
                             onClose={() => setOpenDropdownIndex(null)}
                         >
                              <button 

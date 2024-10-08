@@ -9,7 +9,7 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
         // 모든 작업에 대해 선택 상태를 초기화합니다.
         const initialSelectedTasks = {};
         task.forEach(t => {
-            initialSelectedTasks[t.taskIdx] = false;
+            initialSelectedTasks[t.idx] = false;
         });
         setSelectedTasks(initialSelectedTasks);
     }, [task, setSelectedTasks]);
@@ -76,19 +76,19 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                         </thead>
                     <tbody className="overflow-y-auto" >
                     {task.map((task, i) => (
-                        <tr key={i} className='relative hover:bg-gray-100' onClick={() => handleSelectTask(task.taskIdx)}>
+                        <tr key={i} className='relative hover:bg-gray-100' onClick={() => handleSelectTask(task.idx)}>
                             <td className="p-2 border text-sm text-black items-center text-center">
-                                <input type="checkbox" checked={selectedTasks[task.taskIdx] || false} onChange={(e) => handleCheckboxChange(e, task.taskIdx)} onClick={(e) => e.stopPropagation()}/>
+                                <input type="checkbox" checked={selectedTasks[task.taskIdx] || false} onChange={(e) => handleCheckboxChange(e, task.idx)} onClick={(e) => e.stopPropagation()}/>
                             </td>
-                            <td className="p-2 border text-sm text-black items-center text-center">{task.taskName}</td>
-                            <td className="p-2 border text-sm text-black items-center text-center">{task.assignedTo}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.name}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center">{task.assignedToName}</td>
                             <td className="p-2 border text-sm text-black items-center text-center">
                                 <StatusBadge status={task.status} />
                             </td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.priority}</td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.startDate}</td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.endDate}</td>
-                            <td className="p-2 border text-sm text-black items-center text-center truncate max-w-72">{task.taskDescription}</td>
+                            <td className="p-2 border text-sm text-black items-center text-center truncate max-w-72">{task.description}</td>
                             <td className="p-2 border text-sm text-black relative items-center text-center">
                                 <button onClick={(e) => toggleDropdown(e, i)} className="cursor-pointer text-3xl w-4">
                                     ⋮

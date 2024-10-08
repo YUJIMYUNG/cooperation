@@ -1,6 +1,7 @@
 package com.project.cooperation.service;
 
 import com.project.cooperation.dto.ProjectDTO;
+import com.project.cooperation.dto.ProjectPageDTO;
 import com.project.cooperation.model.Member;
 import com.project.cooperation.model.Project;
 import com.project.cooperation.repository.MemberRepository;
@@ -8,12 +9,15 @@ import com.project.cooperation.repository.ProjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -29,11 +33,12 @@ public class ProjectService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ProjectDTO> selectAllProject(Long authorIdx, Pageable pageable) {
+    public ProjectPageDTO selectAllProject(Long authorIdx, Pageable pageable) {
         Sort sort = Sort.by(Sort.Direction.DESC, "endDate");
         Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         Page<Project> projects = projectRepository.findAllByAuthor_Idx(authorIdx, pageableWithSort);
-        return projects.map(this::convertToDTO);
+        Page<ProjectDTO> projectDTOs = projects.map(this::convertToDTO);
+        return new ProjectPageDTO(projectDTOs);
     }
 
     /**
@@ -46,6 +51,16 @@ public class ProjectService {
         Project project = convertToEntity(dto);
         Project savedDto = projectRepository.save(project);
         return convertToDTO(savedDto);
+    }
+
+    /**
+     * 프로젝트 한개 조회
+     */
+    @Transactional(readOnly = true)
+    public  ProjectDTO selectOne(Long idx){
+        Project project = projectRepository.findById(idx)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + idx));
+        return convertToDTO(project);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.project.cooperation.controller;
 
 import com.project.cooperation.dto.ProjectDTO;
+import com.project.cooperation.dto.ProjectPageDTO;
 import com.project.cooperation.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,18 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<Page<ProjectDTO>> selectAllProject(
+    public ResponseEntity<ProjectPageDTO> selectAllProject(
             @Valid @RequestParam(required = false) Long authorIdx,
             @PageableDefault(size = 5, page = 0) Pageable pageable){
-        Page<ProjectDTO> projectDtoPage = projectService.selectAllProject(authorIdx, pageable);
+        ProjectPageDTO projectDtoPage = projectService.selectAllProject(authorIdx, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(projectDtoPage);
+    }
+
+    @GetMapping("/{idx}")
+    public ResponseEntity<ProjectDTO> selectProject(
+            @PathVariable Long idx
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.selectOne(idx));
     }
 
     @PostMapping
@@ -33,6 +41,7 @@ public class ProjectController {
         ProjectDTO createdProject = projectService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
     }
+
 
     @PutMapping("/{idx}")
     public ResponseEntity<ProjectDTO> update(

@@ -4,8 +4,12 @@ import { LOCAL_HOST } from '../constant/path';
 // 에러 처리 헬퍼 함수
 const handleError = async (response) => {
   if (!response.ok) {
-    const errorData = await response.json();
-    throw { error: errorData.error, message: errorData.message };
+    const errorData = await response.json().catch(() => ({}));
+    throw { 
+      status: response.status,
+      error: errorData.error || 'Server error',
+      message: errorData.message || 'An unknown error occurred'
+    };
   }
   return response.json();
 };
@@ -15,6 +19,29 @@ export const fetchProjects = createAsyncThunk(
   async ({page = 0, size = 5, sort="endDate"}, { rejectWithValue }) => {
     try {
       const response = await fetch(LOCAL_HOST + `/api/projects?authorIdx=${1}&page=${page}&size=${size}&sort=${sort}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return rejectWithValue({ 
+          status: response.status,
+          error: errorData.error || 'Server error',
+          message: errorData.message || 'An unknown error occurred'
+        });
+      }
+      return response.json();
+    } catch (err) {
+      return rejectWithValue({
+        error: 'Network error',
+        message: err.message || 'Failed to connect to the server'
+      });
+    }
+  }
+);
+
+export const fetchProject = createAsyncThunk(
+  'projects/fetchProject',
+  async (projectId, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${LOCAL_HOST}/api/projects/${projectId}`);
       return handleError(response);
     } catch (err) {
       return rejectWithValue(err);
@@ -74,6 +101,7 @@ const projectsSlice = createSlice({
   name: 'projects',
   initialState: {
     list: [],
+    currentProject: null,
     status: 'idle',
     error: null,
     errorMessage: null,
@@ -114,6 +142,14 @@ const projectsSlice = createSlice({
         state.error = action.payload.error;
         state.errorMessage = action.payload.message;
       })
+      .addCase(fetchProject.fulfilled, (state, action) => {
+        const index = state.list.findIndex(p => p.idx === action.payload.idx);
+        if (index !== -1) {
+          state.list[index] = action.payload;
+        } else {
+          state.list.push(action.payload);
+        }
+      })
       .addCase(createProject.fulfilled, (state, action) => {
         state.list.unshift(action.payload);
         if (state.list.length > state.pageSize) {
@@ -135,15 +171,27 @@ const projectsSlice = createSlice({
         action => action.type.endsWith('/rejected'),
         (state, action) => {
           state.status = 'failed';
-          state.error = action.payload.error;
-          state.errorMessage = action.payload.message;
-          // MethodArgumentNotValidException 처리
-          if (action.payload.message && action.payload.message.includes(': ')) {
-            state.fieldErrors = action.payload.message.split(', ').reduce((acc, curr) => {
-              const [field, message] = curr.split(': ');
-              acc[field] = message;
-              return acc;
-            }, {});
+          if (action.payload) {
+            state.error = action.payload.error || 'An error occurred';
+            state.errorMessage = action.payload.message || 'An unknown error occurred';
+            
+            if (action.payload.errors && Array.isArray(action.payload.errors)) {
+              state.fieldErrors = action.payload.errors.reduce((acc, error) => {
+                acc[error.field] = error.defaultMessage;
+                return acc;
+              }, {});
+            } else {
+              state.fieldErrors = {};
+            }
+          } else if (action.error) {
+            // action.error 객체 사용
+            state.error = action.error.name || 'Network error';
+            state.errorMessage = action.error.message || 'Failed to connect to the server';
+            state.fieldErrors = {};
+          } else {
+            state.error = 'Unknown error';
+            state.errorMessage = 'An unexpected error occurred';
+            state.fieldErrors = {};
           }
         }
       );

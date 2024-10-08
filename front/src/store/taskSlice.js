@@ -3,12 +3,16 @@ import { LOCAL_HOST } from "../constant/path";
 
 // 에러 처리 헬퍼 함수
 const handleError = async (response) => {
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw { error: errorData.error, message: errorData.message };
-    }
-    return response.json();
-  };
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw { 
+      status: response.status,
+      error: errorData.error || 'Server error',
+      message: errorData.message || 'An unknown error occurred'
+    };
+  }
+  return response.json();
+};
   
   // 작업 가져오기
   export const fetchTasks = createAsyncThunk(
@@ -16,6 +20,9 @@ const handleError = async (response) => {
     async (projectIdx, { rejectWithValue }) => {
       try {
         const response = await fetch(`${LOCAL_HOST}/api/projects/${projectIdx}/tasks`);
+        if (response.status === 302) {
+          return response.json();
+        }
         return handleError(response);
       } catch (err) {
         return rejectWithValue(err);
@@ -119,15 +126,22 @@ const handleError = async (response) => {
           action => action.type.endsWith('/rejected'),
           (state, action) => {
             state.status = 'failed';
-            state.error = action.payload.error;
-            state.errorMessage = action.payload.message;
-            // MethodArgumentNotValidException 처리
-            if (action.payload.message && action.payload.message.includes(': ')) {
-              state.fieldErrors = action.payload.message.split(', ').reduce((acc, curr) => {
-                const [field, message] = curr.split(': ');
-                acc[field] = message;
-                return acc;
-              }, {});
+            if (action.payload) {
+              state.error = action.payload.error || 'An error occurred';
+              state.errorMessage = action.payload.message || 'An unknown error occurred';
+              
+              if (action.payload.errors && Array.isArray(action.payload.errors)) {
+                state.fieldErrors = action.payload.errors.reduce((acc, error) => {
+                  acc[error.field] = error.defaultMessage;
+                  return acc;
+                }, {});
+              } else {
+                state.fieldErrors = {};
+              }
+            } else {
+              state.error = 'Network error';
+              state.errorMessage = 'Failed to connect to the server';
+              state.fieldErrors = {};
             }
           }
         );
