@@ -31,13 +31,19 @@ const Layout = () => {
         if(e.key === "user" && !e.newValue){
           setModalOpen(true);
         }
-      }
 
+        
+      }
+      
       console.log(localStorage.getItem("user"));
+      
       //local storage에 값이 있냐없냐 여부를 확인하고
       if(localStorage.getItem("user")){
         console.log(3)
         setModalOpen(false);
+        
+        //localStorage에 값이 있으면 값을 저장
+        dispatch(setUser(JSON.parse(localStorage.getItem("user"))))
       }else{
         setModalOpen(true);
       }
@@ -49,7 +55,7 @@ const Layout = () => {
       return () => {
         window.removeEventListener("storage", handleStorageChange);
       }
-    },[]);
+    },[dispatch]);
 
     //모달창 띄우는 함수
     const handleModal = () => {
@@ -87,7 +93,10 @@ const Layout = () => {
           dispatch(setUser({
             userIdx: data.userIdx,
             nickname: data.nickname,
-            email: data.email
+            email: data.email,
+            userId: data.id,
+            color:data.color
+
         }));
           console.log(localStorage.getItem("user"));
 

@@ -7,6 +7,6 @@ export default configureStore({
     reducer:{
         projects : projectSlice,
         tasks : taskSlice,
-        memebers : memberLoginSlice
+        members : memberLoginSlice
     }
 })

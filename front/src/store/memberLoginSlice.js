@@ -7,13 +7,18 @@ const memberLoginSlice = createSlice({
         nickname : '',
         email : '',
         idx : null,
+        id : '',
+        color : ''
     },
     reducers : {
         //로그인
         setUser(state, action){
-            state.nickname = action.payload.ninkname;
+            state.nickname = action.payload.nickname;
             state.email = action.payload.email;
             state.idx = action.payload.userIdx;
+            state.id = action.payload.userId;
+            state.color = action.payload.color;
+
             localStorage.clear()
             localStorage.setItem('user', JSON.stringify(action.payload));
             

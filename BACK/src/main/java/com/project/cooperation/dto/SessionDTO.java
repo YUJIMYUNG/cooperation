@@ -9,4 +9,6 @@ public class SessionDTO {
     private String nickname;
     private String email;
     private Long userIdx;
+    private String color;
+    private String id;
 }

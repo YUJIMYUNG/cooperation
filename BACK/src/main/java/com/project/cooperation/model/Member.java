@@ -35,6 +35,9 @@ public class Member {
     @Column(name = "member_password", nullable = false)
     private String password;
 
+    @Column(name = "member_color", nullable = false)
+    private String color;
+
 //    @ElementCollection(fetch = FetchType.LAZY)
 //    @Builder.Default
 //    @Enumerated(EnumType.STRING)

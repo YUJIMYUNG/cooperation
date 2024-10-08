@@ -21,11 +21,13 @@ public class MemberDTO extends User {
 
     private String password;
 
+    private String color;
+
     //member role 역할, 화면에서 처리하기 편하게 String 으로 처리
     private List<String> roleNames = new ArrayList<>();
 
     //  User클래스의 생성자는 username, password, authorities 세가지 매개변수를 받는다.
-    public MemberDTO(Long idx,String id, String email, String nickname, String password, List<String> roleNames){
+    public MemberDTO(Long idx,String id, String email, String nickname, String password,String color, List<String> roleNames){
         super(
                 id,
                 password,
@@ -36,6 +38,7 @@ public class MemberDTO extends User {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.color = color;
         this.roleNames = roleNames;
     }
 

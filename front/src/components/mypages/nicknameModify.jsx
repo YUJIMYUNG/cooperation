@@ -4,12 +4,12 @@ import Input from '../../atom/Input';
 import Button from '../../atom/button';
 import { LOCAL_HOST } from '../../constant/path';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const NicknameModify = () => {
-
+    const dispatch = useDispatch();
     //const [userIdx, setUserIdx] = useState("");//로그인한 유저 idx
-    const userIdx = useSelector(state => state.members?.idx)
-    const userNickname = useSelector(state => state.members?.nickname)
+    const {idx, nickname, email, id, color} = useSelector(state => state.members)
     const [updateNickname, setUpdaterNickname] = useState(""); //수정할 닉네임
 
     const [errorMessage, setErrorMessage] = useState(""); //에러 메세지
@@ -17,27 +17,27 @@ const NicknameModify = () => {
     const [showColorPicker, setShowColorPicker] = useState(false);//선택 색상 메뉴
     const [loading, setLoading] = useState(true);
     
-    // useEffect(() => {
-    //     console.log(userIdx)
-    //     if (userIdx && userNickname) {
-    //       setLoading(false);
-    //     }
-    //   }, [userIdx, userNickname]);
+    useEffect(() => {
+        console.log(idx)
+        if (idx && nickname) {
+          setLoading(false);
+        }
+      }, [dispatch, idx, nickname,email, id, color]);
     
     useEffect(() => {
-        if (userNickname) {
-            setUpdaterNickname(userNickname);
+        if (nickname) {
+            setUpdaterNickname(nickname);
         }
-    }, [userNickname]);
+    }, [nickname]);
 
 
     //서버에 요청을 보내 해당 userIdx에 맞는 유저에 대한 정보를 가져옴
     // useEffect(() => {
-    //     if (userIdx && userNickname) {
-    //       getUserInfo(userIdx);
-    //       console.log(userIdx)
+    //     if (idx && nickname) {
+    //       getUserInfo(idx);
+    //       console.log(idx)
     //     }
-    //   }, [userIdx, userNickname]);
+    //   }, [idx, nickname]);
 
     // if (loading) {
     //     return <div>데이터를 불러오는 중입니다... </div>;
@@ -45,24 +45,24 @@ const NicknameModify = () => {
     //   } 
 
 
-//     const getUserInfo = async (userIdx) => {
-//         console.log(99);
-//         try {
-//             const formData = userNickname;
+    const getUserInfo = async (idx) => {
+        console.log(99);
+        try {
+            const formData = nickname;
             
-// // /0  /1  /
-//             const response = await fetch(`${LOCAL_HOST}/api/member/${userIdx}`,{
-//                 method: 'PUT',
-//                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-//                 body: formData.toString()
-//             })
+// /0  /1  /
+            const response = await fetch(`${LOCAL_HOST}/api/member/${idx}`,{
+                method: 'PUT',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: formData.toString()
+            })
 
-//             const data = await response.json();
+            const data = await response.json();
 
-//             } catch(error){
-//                 console.log("userInfo error")
-//             }
-//         } 
+            } catch(error){
+                console.log("userInfo error")
+            }
+        } 
     
 
 
@@ -81,7 +81,7 @@ const NicknameModify = () => {
 
     //닉네임 유효성 검사
     const validNickname = () => {
-        if(!userNicknameRegex.test(userNickname)) {
+        if(!userNicknameRegex.test(nickname)) {
             setErrorMessage("닉네임은 영어 대소문자, 숫자, 한글 10자 이내로 입력해야 합니다.");
         } else {
             setErrorMessage("");

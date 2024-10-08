@@ -33,9 +33,12 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
 
         //인증한 내용 가져오기
         UserDetails memberDTO = (UserDetails) authentication.getPrincipal();
-        SessionDTO sessionDTO = new SessionDTO(memberDTO.getMember().getNickname(),
+        SessionDTO sessionDTO = new SessionDTO(
+                memberDTO.getMember().getNickname(),
                 memberDTO.getMember().getEmail(),
-                memberDTO.getMember().getIdx());
+                memberDTO.getMember().getIdx(),
+                memberDTO.getMember().getColor(),
+                memberDTO.getMember().getId());
         //로그인 처리 반환을 어떻게 할 것인지를 처리해보기
         session.setAttribute("user",sessionDTO);
         session.setMaxInactiveInterval(60*30);
