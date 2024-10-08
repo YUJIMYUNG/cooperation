@@ -36,8 +36,9 @@ public class TaskController {
             @PathVariable Long taskIdx,
             @RequestBody TaskDTO taskDTO
     ){
+        log.info("taskIdx : {}", taskIdx );
         log.info("taskDTO : {}", taskDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(taskService.update(projectIdx, taskIdx, taskDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.update(projectIdx, 1L, taskDTO));
     }
 
 }

@@ -197,8 +197,8 @@ function Task() {
     };
 
     // 작업 수정
-    const handUpdateTask = (taskData) =>{
-        dispatch(updateTask({projectIdx, taskiIdx:taskData.idx, updates:taskData}))
+    const handUpdateTask = (idx, taskData) =>{
+        dispatch(updateTask(projectIdx, idx, taskData));
     }
 
     // 삭제 모달 열기 (개별 삭제)
@@ -222,7 +222,7 @@ function Task() {
 
     // 개별 작업 삭제 로직
     const handleIndividualDelete = (task) => {
-        if (task && task.taskIdx) {
+        if (task && task.idx) {
             openDeleteModal(task);
         } else {
             

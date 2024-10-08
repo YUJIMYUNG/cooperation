@@ -19,6 +19,7 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
     ];
 
     const initialFormData = {
+        idx: 0,
         name: '',
         description: '',
         status: 'TODO',
@@ -36,6 +37,7 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
     const isFormChanged = useMemo(() => {
         if (!isEditing) return true;
         return JSON.stringify(formData) !== JSON.stringify({
+            idx: task.idx || 0,
             name: task.name || '',
             description: task.description || '',
             priority: task.priority || "LOW",
@@ -73,10 +75,11 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
         setIsSubmitting(true);
         
         if (isEditing) {
-            onUpdate({ ...formData, idx: task.idx });
+            onUpdate(task.idx, formData);
         } else {
             onCreate(formData);
         }
+        
     };
 
     const handleCancelClick = () => {
