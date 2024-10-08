@@ -1,14 +1,70 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserIcon from '../../atom/userIcon';
 import Input from '../../atom/Input';
 import Button from '../../atom/button';
+import { LOCAL_HOST } from '../../constant/path';
+import { useSelector } from 'react-redux';
 
 const NicknameModify = () => {
 
-    const [userNickname, setUserNickname] = useState(""); //기존 닉네임
+    //const [userIdx, setUserIdx] = useState("");//로그인한 유저 idx
+    const userIdx = useSelector(state => state.members?.idx)
+    const userNickname = useSelector(state => state.members?.nickname)
+    const [updateNickname, setUpdaterNickname] = useState(""); //수정할 닉네임
+
     const [errorMessage, setErrorMessage] = useState(""); //에러 메세지
     const [selectedColor, setSelectedColor] = useState("gray")//선택한 userIcon색상 
     const [showColorPicker, setShowColorPicker] = useState(false);//선택 색상 메뉴
+    const [loading, setLoading] = useState(true);
+    
+    // useEffect(() => {
+    //     console.log(userIdx)
+    //     if (userIdx && userNickname) {
+    //       setLoading(false);
+    //     }
+    //   }, [userIdx, userNickname]);
+    
+    useEffect(() => {
+        if (userNickname) {
+            setUpdaterNickname(userNickname);
+        }
+    }, [userNickname]);
+
+
+    //서버에 요청을 보내 해당 userIdx에 맞는 유저에 대한 정보를 가져옴
+    // useEffect(() => {
+    //     if (userIdx && userNickname) {
+    //       getUserInfo(userIdx);
+    //       console.log(userIdx)
+    //     }
+    //   }, [userIdx, userNickname]);
+
+    // if (loading) {
+    //     return <div>데이터를 불러오는 중입니다... </div>;
+        
+    //   } 
+
+
+//     const getUserInfo = async (userIdx) => {
+//         console.log(99);
+//         try {
+//             const formData = userNickname;
+            
+// // /0  /1  /
+//             const response = await fetch(`${LOCAL_HOST}/api/member/${userIdx}`,{
+//                 method: 'PUT',
+//                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+//                 body: formData.toString()
+//             })
+
+//             const data = await response.json();
+
+//             } catch(error){
+//                 console.log("userInfo error")
+//             }
+//         } 
+    
+
 
     const userNicknameRegex = /^[a-zA-Z가-힣0-9]{1,10}$/ //닉네임 유효성 검사 : 영어 대소문자, 한글, 10자이내
     const colorOptions = {
@@ -79,7 +135,7 @@ const NicknameModify = () => {
                         <label className='p-4 flex justify-start w-48'>NICK NAME</label>
                     </div>
                     <div className='flex w-96 justify-center items-center'>
-                        <Input placeholder={"닉네임"} widthSize={'200'} onChange={(e)=>setUserNickname(e.target.value)} onBlur={()=>validNickname()}></Input>
+                        <Input placeholder={"닉네임"} widthSize={'200'} onChange={(e)=>setUpdaterNickname(e.target.value)} onBlur={()=>validNickname()} value={updateNickname}></Input>
                         <Button text={"수정하기"} type={"button"}></Button>
                     </div>
                     <div>

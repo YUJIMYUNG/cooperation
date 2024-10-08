@@ -2,10 +2,12 @@ package com.project.cooperation.service;
 
 import com.project.cooperation.dto.JoinRequest;
 import com.project.cooperation.dto.LoginRequest;
+import com.project.cooperation.dto.SessionDTO;
 import com.project.cooperation.model.Member;
 import com.project.cooperation.model.Project;
 import com.project.cooperation.repository.MemberRepository;
 import com.project.cooperation.security.CustomUserDetailsService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class MemberService{
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final HttpSession session;
 
     //로그인 ID 중복검사 메서드
     public boolean checkLoginIdDuplicate(String id){
@@ -70,6 +73,11 @@ public class MemberService{
         return findMember.orElse(null);
     }
 
+    //회원정보 변경
+    public SessionDTO updateMemberInfo(Long idx, String nickname){
 
+
+        return null;
+    }
 
 }

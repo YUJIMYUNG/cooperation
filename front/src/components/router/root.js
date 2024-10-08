@@ -7,6 +7,8 @@ import FindIdPwdModal from '../auth/findIdPwdModal';
 import LoginModal from '../auth/LoginModal';
 import Loading from '../../atom/loading';
 import { LOCAL_HOST } from '../../constant/path';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../store/memberLoginSlice';
 
 const ProjectPage = lazy(() => import ('../../Pages/project/projectPage'));
 const ProjectForm = lazy(() => import('../../Pages/project/projectForm'));
@@ -21,9 +23,16 @@ const Layout = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [modalType, setModalType] = useState("login");
     const [loginErrorMessage, setLoginErrorMessage] = useState(false);
-    
+    const dispatch = useDispatch();
   
     useEffect(() => {
+      const handleStorageChange = (e) => {
+        //localStorage에 값이 삭제되면 모달창 다시 띄움
+        if(e.key === "user" && !e.newValue){
+          setModalOpen(true);
+        }
+      }
+
       console.log(localStorage.getItem("user"));
       //local storage에 값이 있냐없냐 여부를 확인하고
       if(localStorage.getItem("user")){
@@ -31,6 +40,14 @@ const Layout = () => {
         setModalOpen(false);
       }else{
         setModalOpen(true);
+      }
+
+      //storage 이벤트 리스너 추가 - 다른 탭에서도 storage가 변경됨을 바로 감지
+      window.addEventListener("storage", handleStorageChange);
+
+      //컴포넌트 언마운트시 리스너 제거 - 메모리 누수 방지
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
       }
     },[]);
 
@@ -67,8 +84,11 @@ const Layout = () => {
           setLoginErrorMessage(true);
         } else{
           console.log(1)
-          localStorage.clear()
-          localStorage.setItem('user', JSON.stringify(data));
+          dispatch(setUser({
+            userIdx: data.userIdx,
+            nickname: data.nickname,
+            email: data.email
+        }));
           console.log(localStorage.getItem("user"));
 
           //성공하면 모달창 닫기
