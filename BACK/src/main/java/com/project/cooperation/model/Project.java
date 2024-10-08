@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "project")
@@ -40,6 +41,9 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Task> tasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    private Set<ProjectMember> projectMembers;
 
     public void updateProject(String title, String description, LocalDate startDate, LocalDate endDate){
         this.title = title;

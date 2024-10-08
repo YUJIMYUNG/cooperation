@@ -11,18 +11,25 @@ import TaskCard from '../../components/modules/taskCard';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import TasksFormModal from '../../components/modal/tasksFormModal';
 import DeleteConfirmModal from '../../components/modal/deleteConfirmModal';
+import { useDispatch } from 'react-redux';
+import { createTask, deleteTask, fetchTasks, updateTask } from '../../store/taskSlice';
+import { fetchProject, fetchProjects } from '../../store/projectSlice';
 
 
 
 function Task() {
-    const { idx } = useParams();
-    const idxN = idx? Number(idx) : undefined;
-    const project = useSelector(state => state.projects.list.find(p => p.idx === idxN));
+    const { idx: projectIdx } = useParams();
+    const dispatch = useDispatch();
+    const project = useSelector(state => 
+        state.projects.list.find(p => p.idx === Number(projectIdx))
+    );
     // 샘플데이터
     const tasks = useSelector(state => state.tasks.list);
-    const setTasks = () => {
-        console.log(123);
-    }
+    const projectStatus = useSelector(state => state.projects.status);
+    const taskStatus = useSelector(state => state.tasks.status);
+
+    const error = useSelector(state => state.tasks.error);
+    const errorMessage = useSelector(state => state.tasks.errorMessage);
     // table에 보낼 check 여부 변서
     const [selectedTasks, setSelectedTasks] = useState({});
     const [isListView, setIsListView] = useState(true);
@@ -36,6 +43,12 @@ function Task() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState(null);
     const [isBulkDelete, setIsBulkDelete] = useState(false);
+
+    // 컴포넌트 마운트 시 작업 목록 조회
+    useEffect(() => {
+        // dispatch(fetchProject(projectIdx)); // 프로젝트 정보 가져오기
+        dispatch(fetchTasks(projectIdx));
+    }, [dispatch, projectIdx]);
 
     // tasks가 변경될 때마다 selectedTasks를 초기화합니다.
     // 갤러리에서 상태를 변경할 수 있기 때문에
@@ -93,10 +106,6 @@ function Task() {
         },
     ]
 
-    const onClickHandler = () => {
-
-    }
-
     // 마감일 기준 정렬 함수
     const sortByDeadline = (tasks) => {
         return [...tasks].sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
@@ -122,48 +131,17 @@ function Task() {
 
 
     const onDragEnd = useCallback((result) => {
-        const { source, destination } = result;
+        const { source, destination, draggableId } = result;
 
         if (!destination) {
             return;
         }
 
-        setTasks(prevTasks => {
-            const newTasks = Array.from(prevTasks);
-
-            // 같은 상태 내에서의 이동
-            if (source.droppableId === destination.droppableId) {
-                const statusTasks = newTasks.filter(t => t.status === source.droppableId);
-                const [movedItem] = statusTasks.splice(source.index, 1);
-                statusTasks.push(movedItem); // 임시로 끝에 추가
-                
-                // 마감일 기준으로 재정렬
-                const sortedTasks = sortByDeadline(statusTasks);
-                
-                return newTasks.map(task => 
-                    task.status === source.droppableId ? sortedTasks.shift() : task
-                );
-            } 
-            // 다른 상태로의 이동
-            else {
-                const sourceStatusTasks = newTasks.filter(t => t.status === source.droppableId);
-                const destStatusTasks = newTasks.filter(t => t.status === destination.droppableId);
-                
-                const [movedItem] = sourceStatusTasks.splice(source.index, 1);
-                movedItem.status = destination.droppableId;
-                destStatusTasks.push(movedItem); // 임시로 끝에 추가
-                
-                // 출발지와 목적지 상태의 작업들을 각각 마감일 기준으로 재정렬
-                const sortedSourceTasks = sortByDeadline(sourceStatusTasks);
-                const sortedDestTasks = sortByDeadline(destStatusTasks);
-
-                return newTasks.map(task => {
-                    if (task.status === source.droppableId) return sortedSourceTasks.shift();
-                    if (task.status === destination.droppableId) return sortedDestTasks.shift();
-                    return task;
-                });
-            }
-        });
+        dispatch(updateTask({
+            projectIdx,
+            taskIdx: draggableId,
+            updates: { status: destination.droppableId }
+        }));
     }, []);
 
     const renderDraggableTask = useCallback((task, index) => (
@@ -205,16 +183,16 @@ function Task() {
         openTaskForm();
     };
 
-     // 선택된 작업들을 삭제하는 로직 구현
-    // ...이나 :을 클릭했을 때 작동
+
+    // 작업 수정
     const handleIndividualEdit = (task) => {
-        console.log("작업 수정:", task);
+        dispatch(updateTask({ projectIdx, taskIdx: task.taskIdx, updates: task }));
         closeTaskForm();
     };
 
-    // 작업 저장/수정 핸들러
+    // 작업 생성
     const handleSaveTask = (taskData) => {
-        console.log("작업 생성 :", taskData);
+        dispatch(createTask({ projectIdx, dto: taskData }));
         closeTaskForm();
     };
 
@@ -242,7 +220,7 @@ function Task() {
         if (task && task.taskIdx) {
             openDeleteModal(task);
         } else {
-            console.error('Invalid task object:', task);
+            
         }
     };
 
@@ -254,15 +232,28 @@ function Task() {
     // 작업 삭제 확인
     const confirmDelete = () => {
         if (isBulkDelete) {
-            // 일괄 삭제 로직
-            const tasksToKeep = tasks.filter(task => !selectedTasks[task.taskIdx]);
-            setTasks(tasksToKeep);
+            Object.keys(selectedTasks).forEach(taskIdx => {
+                if (selectedTasks[taskIdx]) {
+                    dispatch(deleteTask({ projectIdx, taskIdx }));
+                }
+            });
             setSelectedTasks({});
         } else if (taskToDelete) {
-            // 개별 삭제 로직
-            setTasks(prevTasks => prevTasks.filter(task => task.taskIdx !== taskToDelete.taskIdx));
+            dispatch(deleteTask({ projectIdx, taskIdx: taskToDelete.taskIdx }));
         }
         closeDeleteModal();
+
+    };
+    if (projectStatus === 'loading' || taskStatus === 'loading') {
+        return <div>Loading...</div>;
+    }
+
+    if (projectStatus === 'failed' || taskStatus === 'failed') {
+        return <div>{error} : {errorMessage}</div>;
+    }
+
+    if (!project) {
+        return <div>Project not found.</div>;
     }
 
     return (

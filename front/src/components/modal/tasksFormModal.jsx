@@ -53,8 +53,8 @@ const TasksFormModal = ({ task, isOpen, onClose, onSave }) => {
     const handleCancleClick = () => {
         onClose();
         setFormData({
-            taskName: '',
-            taskDescription: '',
+            name: '',
+            description: '',
             priority: 1,
             startDate: '',
             endDate: '',

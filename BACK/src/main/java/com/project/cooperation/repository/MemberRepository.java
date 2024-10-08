@@ -7,7 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -24,6 +27,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // idx를 가지고 유저 찾기
     Optional<Member> findByIdx(Long idx);
+
+    @Query("SELECT new map(m.idx as id, m.nickname as nickname) FROM Member m WHERE m.idx IN :ids")
+    List<Map<String, Object>> findNicknamesById(@Param("ids") Set<Long> ids);
 
 }
 

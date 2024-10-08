@@ -11,7 +11,7 @@ export default function ProjectPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const projects = useSelector(state => state.projects.list);
+    const projects = useSelector(state => state.projects?.list);
     const status = useSelector(state => state.projects.status);
     const error = useSelector(state => state.projects.error);
     const currentPage = useSelector(state => state.projects.currentPage);
@@ -45,7 +45,7 @@ export default function ProjectPage() {
             await dispatch(deleteProject(idx)).unwrap();
             loadProjects();
         } catch (error) {
-            console.error("Failed to delete project:", error);
+            
         }
     }
     // 페이징
@@ -79,12 +79,12 @@ export default function ProjectPage() {
                 {projects && projects.map((project, i) => (
                     <ProjectBlock 
                         key={i} 
-                        title={project.title}
-                        idx={project.idx}
-                        description={project.description}
-                        author={project.author}
-                        startDate={project.startDate}
-                        endDate={project.endDate}
+                        title={project?.title}
+                        idx={project?.idx}
+                        description={project?.description}
+                        author={project?.author}
+                        startDate={project?.startDate}
+                        endDate={project?.endDate}
                         onEdit={() => editProjectHandler(project.idx)}
                         onDelete={() => deleteProjectHandler(project.idx)}
                     />

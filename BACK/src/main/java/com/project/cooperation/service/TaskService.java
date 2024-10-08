@@ -6,29 +6,47 @@ import com.project.cooperation.model.Task;
 import com.project.cooperation.repository.MemberRepository;
 import com.project.cooperation.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
     private final MemberRepository memberRepository;
 
-    // 해당 프로젝트의 모든 작업 찾기
-    public List<TaskDTO> getAllTasks(Long projectIdx){
-        List<Task> taskList = taskRepository.findAllByProjectIdx(projectIdx);
-        return taskList.stream()
-                .map(this::convertToDTO)
+    @Transactional(readOnly = true)
+    public List<TaskDTO> getAllTasks(Long projectIdx) {
+        List<Task> tasks = taskRepository.findAllByProjectIdxWithProject(projectIdx);
+
+        // 고유한 assignedToIdx 값들을 수집
+        Set<Long> memberIds = tasks.stream()
+                .map(Task::getAssignedToIdx)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 멤버 정보를 한 번에 조회
+        Map<Long, String> memberNicknames = memberRepository.findNicknamesById(memberIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        m -> ((Number) m.get("id")).longValue(),
+                        m -> (String) m.get("nickname")
+                ));
+
+        // TaskDTO로 변환
+        return tasks.stream()
+                .map(task -> convertToDTO(task, memberNicknames))
                 .collect(Collectors.toList());
     }
 
-    private TaskDTO convertToDTO(Task task) {
+    private TaskDTO convertToDTO(Task task, Map<Long, String> memberNicknames) {
         return TaskDTO.builder()
                 .idx(task.getIdx())
                 .name(task.getName())
@@ -39,20 +57,8 @@ public class TaskService {
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
                 .assignedToIdx(task.getAssignedToIdx())
-                .projectName(task.getProject().getTitle())
-                .assignedToName(getAssignedMemberName(task.getAssignedToIdx()))
+                .assignedToName(memberNicknames.get(task.getAssignedToIdx()))
                 .build();
-    }
-
-    /**
-     * 해당 작업의 작업자 닉네임 찾기
-     * @param memberIdx
-     * @return
-     */
-    private String getAssignedMemberName(Long memberIdx) {
-        Member member = memberRepository.findByIdx(memberIdx)
-                .orElseThrow(()->new UsernameNotFoundException("Not Found"));
-        return member.getNickname();
     }
 }
 
