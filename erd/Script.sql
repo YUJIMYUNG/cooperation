@@ -6,6 +6,7 @@ CREATE TABLE member (
   member_email VARCHAR(50) NOT NULL COMMENT '이메일',
   member_password VARCHAR(255) NOT NULL COMMENT '비밀번호',
   role VARCHAR(10) NOT NULL DEFAULT 'USER' COMMENT '보안 역할',
+  member_color VARCHAR(10) NOT NULL DEFAULT 'GRAY' COMMENT '색깔', 
   PRIMARY KEY (member_idx),
   CONSTRAINT UQ_member_id UNIQUE (member_id),
   CONSTRAINT UQ_member_nickname UNIQUE (member_nickname),
@@ -65,12 +66,12 @@ CREATE TABLE task (
 ) COMMENT '작업 정보';
 
 
-INSERT INTO member (member_id, member_nickname, member_email, member_password, role) VALUES
-('user1', '홍길동', 'user1@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'ADMIN'),
-('user2', '김철수', 'user2@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'USER'),
-('user3', '이영희', 'user3@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'USER'),
-('user4', '박민수', 'user4@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'USER'),
-('user5', '최유나', 'user5@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'ADMIN');
+INSERT INTO member (member_id, member_nickname, member_email, member_password, role, member_color) VALUES
+('user1', '홍길동', 'user1@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'ADMIN', 'black'),
+('user2', '김철수', 'user2@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'USER', 'blue'),
+('user3', '이영희', 'user3@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'USER', 'green'),
+('user4', '박민수', 'user4@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'USER','yellow'),
+('user5', '최유나', 'user5@example.com', '$2a$10$qmYX0ryFSSpkVdyAwtHJB.XDoPPZOBcNRInVB5yBYWR0UHgaEALsm', 'ADMIN','red');
 
 -- 참고: 모든 사용자의 비밀번호는 'test123'입니다.
 -- 프로젝트 테스트 데이터 삽입
