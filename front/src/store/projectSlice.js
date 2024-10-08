@@ -134,7 +134,7 @@ const projectsSlice = createSlice({
         state.list = action.payload.content;
         state.totalPages = action.payload.totalPages;
         state.totalElements = action.payload.totalElements;
-        state.currentPage = action.payload.number;
+        state.currentPage = action.payload.currentPage;
         state.pageSize = action.payload.size;
       })
       .addCase(fetchProjects.rejected, (state, action) => {

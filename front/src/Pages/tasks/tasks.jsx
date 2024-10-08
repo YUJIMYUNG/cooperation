@@ -55,7 +55,7 @@ function Task() {
     useEffect(() => {
         const initialSelectedTasks = {};
         tasks.forEach(task => {
-            initialSelectedTasks[task.taskIdx] = false;
+            initialSelectedTasks[task.idx] = false;
         });
         setSelectedTasks(initialSelectedTasks);
     }, [tasks]);
@@ -76,7 +76,7 @@ function Task() {
     const handleSelectAll = (isChecked) => {
         const newSelectedTasks = {};
         tasks.forEach(t => {
-            newSelectedTasks[t.taskIdx] = isChecked;
+            newSelectedTasks[t.idx] = isChecked;
         });
         setSelectedTasks(newSelectedTasks);
     };
@@ -87,7 +87,6 @@ function Task() {
             ...prev,
             [taskIdx]: !prev[taskIdx]
         }));
-        console.log(selectedTasks);
     };
 
     // 샘플 데이터
@@ -145,7 +144,7 @@ function Task() {
     }, []);
 
     const renderDraggableTask = useCallback((task, index) => (
-        <Draggable key={task.taskIdx.toString()} draggableId={task.taskIdx.toString()} index={index}>
+        <Draggable key={task.idx.toString()} draggableId={task.idx.toString()} index={index}>
             {(provided) => (
                 <div
                     ref={provided.innerRef}
@@ -156,8 +155,8 @@ function Task() {
                         task={task} 
                         onEdit={handleIndividualEdit}
                         onDelete={handleIndividualDelete}
-                        isSelected={selectedTasks[task.taskIdx]}
-                        onSelect={() => handleSelectTask(task.taskIdx)}
+                        isSelected={selectedTasks[task.idx]}
+                        onSelect={() => handleSelectTask(task.idx)}
                         openTaskForm={openTaskForm}
                     />
                 </div>
@@ -192,9 +191,15 @@ function Task() {
 
     // 작업 생성
     const handleSaveTask = (taskData) => {
+        console.log(taskData);
         dispatch(createTask({ projectIdx, dto: taskData }));
         closeTaskForm();
     };
+
+    // 작업 수정
+    const handUpdateTask = (taskData) =>{
+        dispatch(updateTask({projectIdx, taskiIdx:taskData.idx, updates:taskData}))
+    }
 
     // 삭제 모달 열기 (개별 삭제)
     const openDeleteModal = (task) => {
@@ -261,7 +266,7 @@ function Task() {
             <div>
                 <BodyHeader title={project.title} subtitle={project.description} children={
                     <div>
-                        <Button color={"yellow"} onClickHandler={(e)=>openTaskForm(e)} text={"작업 생성"}/>
+                        <Button color={"yellow"} onClickHandler={()=>openTaskForm()} text={"작업 생성"}/>
                     </div>
                 } />
             </div>
@@ -353,11 +358,12 @@ function Task() {
                     </section>
                 </DragDropContext>
             )}
-            <TasksFormModal 
-                task={editingTask}
-                isOpen={isTaskFormOpen}
-                onClose={closeTaskForm}
-                onSave={handleSaveTask}
+            <TasksFormModal
+            task={editingTask}
+            isOpen={isTaskFormOpen}
+            onClose={closeTaskForm}
+            onCreate={handleSaveTask}
+            onUpdate={handUpdateTask}
             />
             <DeleteConfirmModal 
                 type={isBulkDelete ? "선택된 작업들" : "작업"}

@@ -33,7 +33,7 @@ const TaskCard = ({ task, onClick, onEdit, onDelete, openTaskForm }) => {
         <div>
             <div className="bg-white p-3 rounded shadow cursor-pointer mb-4 flex flex-col gap-2">
                 <div className="flex justify-between">
-                    <h3 className="font-bold">{task.taskName}</h3>
+                    <h3 className="font-bold">{task.name}</h3>
                     <div className="relative">
                         <p className="align-top font-bold" onClick={e => toggleDropdown(e, task.idx)}>···</p>
                         <Dropdown 
