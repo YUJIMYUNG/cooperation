@@ -19,8 +19,8 @@ public class TaskDTO {
     private String name;
     private String description;
     private Long projectIdx;
-    private Priority priority;
-    private Status status;
+    private String priority;
+    private String status;
     private LocalDate startDate;
     private LocalDate endDate;
     private Long assignedToIdx;

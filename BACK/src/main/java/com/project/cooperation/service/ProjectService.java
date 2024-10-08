@@ -111,7 +111,6 @@ public class ProjectService {
     private Project convertToEntity(ProjectDTO projectDto){
         Member member = memberRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Member Not Found"));
-
         return Project.builder()
                 .author(member)
                 .title(projectDto.getTitle())

@@ -42,7 +42,7 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
         handleSelectTask(task);
     };
 
-    const isAllSelected = task.length > 0 && task.every(t => selectedTasks[t.taskIdx]);
+    const isAllSelected = task.length > 0 && task.every(t => selectedTasks[t.idx]);
 
     return (
         <section className='w-full mt-5'>
@@ -78,7 +78,7 @@ const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSele
                     {task.map((task, i) => (
                         <tr key={i} className='relative hover:bg-gray-100' onClick={() => handleSelectTask(task.idx)}>
                             <td className="p-2 border text-sm text-black items-center text-center">
-                                <input type="checkbox" checked={selectedTasks[task.taskIdx] || false} onChange={(e) => handleCheckboxChange(e, task.idx)} onClick={(e) => e.stopPropagation()}/>
+                                <input type="checkbox" checked={selectedTasks[task.idx] || false} onChange={(e) => handleCheckboxChange(e, task.idx)} onClick={(e) => e.stopPropagation()}/>
                             </td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.name}</td>
                             <td className="p-2 border text-sm text-black items-center text-center">{task.assignedToName}</td>

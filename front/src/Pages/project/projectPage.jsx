@@ -18,13 +18,13 @@ export default function ProjectPage() {
     const totalPages = useSelector(state => state.projects.totalPages);
     const pageSize = useSelector(state => state.projects.pageSize);
 
-    const loadProjects = useCallback(() => {
-        dispatch(fetchProjects({ page: currentPage, size: pageSize }));
-    }, [dispatch, currentPage, pageSize]);
+    const loadProjects = useCallback((page) => {
+        dispatch(fetchProjects({ page, size: pageSize }));
+    }, [dispatch, pageSize]);
     
     useEffect(() => {
-        loadProjects();
-    }, [loadProjects]);
+        loadProjects(currentPage);
+    }, [loadProjects, currentPage]);
 
     useEffect(() => {
         return () => {

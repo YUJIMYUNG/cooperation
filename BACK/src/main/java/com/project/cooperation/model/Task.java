@@ -1,5 +1,6 @@
 package com.project.cooperation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.cooperation.common.Priority;
 import com.project.cooperation.common.Status;
 import jakarta.persistence.*;
@@ -33,6 +34,7 @@ public class Task {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_idx", nullable = false)
+    @JsonIgnore
     private Project project;
 
     @Enumerated(EnumType.STRING)
