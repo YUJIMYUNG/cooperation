@@ -8,23 +8,29 @@ import { useDispatch } from 'react-redux';
 
 const NicknameModify = () => {
     const dispatch = useDispatch();
-    //const [userIdx, setUserIdx] = useState("");//로그인한 유저 idx
-    const {idx, nickname, email, id, color} = useSelector(state => state.members)
+    const {idx, nickname, email, id, color} = useSelector((state) => state.members)
     const [updateNickname, setUpdaterNickname] = useState(""); //수정할 닉네임  
-    const [localId, setLocalId] = useState("");//local storage에서 가져온 ID값
-    const [localEmail, setLocalEmail] = useState("") //locat storage에서 가져온 email값 
-    const [localColor, setlocalColor] = useState("") //local storage에서 가져온 color 값 - 설정해줘야함 
     const [errorMessage, setErrorMessage] = useState(""); //에러 메세지
     const [selectedColor, setSelectedColor] = useState("gray")//선택한 userIcon색상 
     const [showColorPicker, setShowColorPicker] = useState(false);//선택 색상 메뉴
     const [loading, setLoading] = useState(true);
     
+    //idx가 없으면 유저 정보를 가져오는 액션 디스패치
+    // useEffect(()=> {
+    //     if(!idx) {
+    //         const storedUser = JSON.parse(localStorage.getItem('user'));
+    //         if(storedUser) {
+    //             dispatch({type : 'FETCH_USER_INFO', payload: storedUser.userIdx})
+    //         }
+    //     }
+    // }, [dispatch, idx])
+
     // useEffect(() => {
     //     console.log(idx)
     //     if (idx && nickname) {
     //       setLoading(false);
     //     }
-    //   }, [dispatch, idx, nickname,email, id, color]);
+    //   }, [dispatch, updateNickname]);
     
     // useEffect(() => {
     //     if (nickname) {
@@ -33,16 +39,18 @@ const NicknameModify = () => {
     //         setLocalEmail(email);
     //     }
     // }, [nickname]);
-    useEffect(() => {
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-        if (storedUser) {
-            setLocalId(storedUser.userId); // 로컬스토리지에서 ID 가져오기
-            setLocalEmail(storedUser.email); // 로컬스토리지에서 EMAIL 가져오기
-        }
-        if (idx && nickname) {
-            setUpdaterNickname(nickname);
-        }
-    }, [idx, nickname]);
+
+
+    // useEffect(() => {
+    //     const storedUser = JSON.parse(localStorage.getItem('user'));
+    //     if (storedUser) {
+    //         setLocalId(storedUser.userId); // 로컬스토리지에서 ID 가져오기
+    //         setLocalEmail(storedUser.email); // 로컬스토리지에서 EMAIL 가져오기
+    //     }
+    //     if (idx && nickname) {
+    //         setUpdaterNickname(nickname);
+    //     }
+    // }, [idx, nickname]);
 
 
     //서버에 요청을 보내 해당 userIdx에 맞는 유저에 대한 정보를 가져옴
@@ -140,7 +148,7 @@ const NicknameModify = () => {
                 {/* 아이디 정보 */}
                 <div className='flex p-2 h-20'>
                     <label className='p-4 flex justify-start w-48'>ID</label>
-                    <p className='p-4 flex justify-center w-96'>{localId}</p>
+                    <p className='p-4 flex justify-center w-96'>{id}</p>
                 </div>
 
                 {/* 닉네임 정보, 수정 영역 */}
@@ -162,7 +170,7 @@ const NicknameModify = () => {
                 {/* 이메일 정보 */}
                 <div className='flex p-2 h-20'>
                     <label className='p-4 flex justify-start w-48'>EMAIL</label>
-                    <p className='p-4 flex justify-center w-96'>{localEmail}</p>
+                    <p className='p-4 flex justify-center w-96'>{email}</p>
                 </div>
             </div>
         </div>

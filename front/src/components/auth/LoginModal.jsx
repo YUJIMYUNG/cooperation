@@ -11,7 +11,7 @@ import { LOCAL_HOST } from "../../constant/path";
 
 
 //로그인 모달창
-const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal, onClickLogin, loginErrorMessage}) => {
+const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal, onClickLogin, loginErrorMessage, disabled}) => {
 
     const [userId, setUserId] = useState(""); //아이디 입력값
     const [userPassword, setUserPassword] = useState(""); //비밀번호 입력값
@@ -82,7 +82,7 @@ const LoginModal = ({switchToRegister, switchToFindIdPwd, handleModal, onClickLo
 
                         {/* 로그인 버튼 */}
                         <div>
-                            <Button color={"yellow"} onClickHandler={handleLogin} text={"로그인"} type={"button"} />
+                            <Button color={"yellow"} onClickHandler={handleLogin} text={"로그인"} type={"button"} disabled={disabled} />
                         </div>
                     </ModalBody>
 

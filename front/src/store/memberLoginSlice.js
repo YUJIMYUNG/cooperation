@@ -22,9 +22,15 @@ const memberLoginSlice = createSlice({
             localStorage.clear()
             localStorage.setItem('user', JSON.stringify(action.payload));
             
-        }
+        },
         //로그아웃
-
+        clearUser(state) {
+            state.nickname = '';
+            state.email = '';
+            state.idx = null;
+            state.id = '';
+            state.color = '';        
+        }
         //회원정보
 
         //닉네임 수정
@@ -34,6 +40,6 @@ const memberLoginSlice = createSlice({
     }
 })
 
-export const {setUser} = memberLoginSlice.actions;
+export const {setUser, clearUser} = memberLoginSlice.actions;
 
 export default memberLoginSlice.reducer;

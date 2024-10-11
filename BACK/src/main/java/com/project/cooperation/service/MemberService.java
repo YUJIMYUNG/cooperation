@@ -4,18 +4,13 @@ import com.project.cooperation.dto.JoinRequest;
 import com.project.cooperation.dto.LoginRequest;
 import com.project.cooperation.dto.SessionDTO;
 import com.project.cooperation.model.Member;
-import com.project.cooperation.model.Project;
 import com.project.cooperation.repository.MemberRepository;
-import com.project.cooperation.security.CustomUserDetailsService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -76,8 +71,27 @@ public class MemberService{
     //회원정보 변경
     public SessionDTO updateMemberInfo(Long idx, String nickname){
 
-
         return null;
+    }
+
+    //회원정보 조회
+    public SessionDTO selectMemberById(Long idx){
+        Member member = memberRepository.findById(idx)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found witd idx" + idx));
+        return convertToDTO(member);
+    }
+
+
+
+    //member 엔티티를 DTO로 변환해주는 함수
+    private SessionDTO convertToDTO(Member member){
+        return SessionDTO.builder()
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .userIdx(member.getIdx())
+                .color(member.getColor())
+                .id(member.getId())
+                .build();
     }
 
 }

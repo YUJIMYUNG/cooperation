@@ -9,6 +9,7 @@ import Loading from '../../atom/loading';
 import { LOCAL_HOST } from '../../constant/path';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/memberLoginSlice';
+import { useSelector } from 'react-redux';
 
 const ProjectPage = lazy(() => import ('../../Pages/project/projectPage'));
 const ProjectForm = lazy(() => import('../../Pages/project/projectForm'));
@@ -19,11 +20,14 @@ const Tasks = lazy(() => import('../../Pages/tasks/tasks'));
 const UserInformation = lazy(() => import('../../components/mypages/userInformation'));
 const MyPageNav =lazy(()=>import('../mypages/myPageNav'))
 
+
 const Layout = () => {
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [modalType, setModalType] = useState("login");
-    const [loginErrorMessage, setLoginErrorMessage] = useState(false);
-    const dispatch = useDispatch();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("login");
+  const [loginErrorMessage, setLoginErrorMessage] = useState(false);
+  const dispatch = useDispatch();
+  const {idx, nickname, email, id, color} = useSelector((state) => state.members)
+  const [isLogingIn, setIsLogingIn] = useState(false) //로그인 진행 중 상태
   
     useEffect(() => {
       const handleStorageChange = (e) => {
@@ -43,7 +47,11 @@ const Layout = () => {
         setModalOpen(false);
         
         //localStorage에 값이 있으면 값을 저장
-        dispatch(setUser(JSON.parse(localStorage.getItem("user"))))
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+            if(storedUser) {
+                dispatch({type : 'FETCH_USER_INFO', payload: storedUser.userIdx})
+            }
+        //dispatch(setUser(JSON.parse(localStorage.getItem("user"))))
       }else{
         setModalOpen(true);
       }
@@ -68,6 +76,7 @@ const Layout = () => {
     
     //로그인 버튼 함수
     const onClickLogin =  async (userId, userPassword) => {
+      setIsLogingIn(true); //로그인 요청 시작 시 상태 변경
       try {
         const formData = new URLSearchParams();
         formData.append('id', userId);       // SecurityConfig의 usernameParameter와 일치
@@ -112,7 +121,9 @@ const Layout = () => {
       } catch (error) {
         console.log("?")
 
-      }  
+      } finally {
+        setIsLogingIn(false); //요청 완료 후 상태 복원
+      }
     
 
     }
@@ -133,7 +144,7 @@ const Layout = () => {
   
     if (modalType === "login") {
       modalContent = (
-        <LoginModal handleModal={handleModal} switchToRegister={switchToRegister} switchToFindIdPwd={switchToFindIdPwd} onClickLogin={onClickLogin} loginErrorMessage={loginErrorMessage}/> 
+        <LoginModal handleModal={handleModal} switchToRegister={switchToRegister} switchToFindIdPwd={switchToFindIdPwd} onClickLogin={onClickLogin} loginErrorMessage={loginErrorMessage} disabled={isLogingIn}/> 
       );
     } else if (modalType === "register") {
       modalContent = (

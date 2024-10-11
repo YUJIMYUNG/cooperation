@@ -3,6 +3,7 @@ package com.project.cooperation.controller;
 import com.project.cooperation.dto.SessionDTO;
 import com.project.cooperation.service.MemberService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,12 @@ public class UserController {
             @RequestBody String nickname){
         log.info("start");
         return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMemberInfo(idx, nickname));
+    }
+
+    //회원정보 조회
+    @GetMapping("/{idx}")
+    public ResponseEntity<SessionDTO> selectMemberByIdx(
+            @PathVariable Long idx){
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.selectMemberById(idx));
     }
 }

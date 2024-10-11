@@ -46,10 +46,6 @@ public class SecurityConfig {
                     config.successHandler(new APILoginSuccessHandler());//성공하면 동작하게 하는 기능
                     config.failureHandler(new APILoginFailHandler());//로그인 실패하면 동작하게 하는 기능
                 })
-                //세션 생성 및 사용여부에 대한 정책 설정
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> { //세션을 만들지 않게 하는 설정
-                    httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.NEVER);
-                })
                 //인증, 인가가 필요한 URL 지정
                 .authorizeHttpRequests(authorizeReqeust ->
                         authorizeReqeust
