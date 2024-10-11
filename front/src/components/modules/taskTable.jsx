@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Dropdown from '../dropdown/dropdown';
 import StatusBadge from '../../atom/statusBadge';
+import DeleteConfirmModal from '../modal/deleteConfirmModal';
 
 const TaskTable = ({task, onEdit = null, onDelete = null, selectedTasks, setSelectedTasks, handleSelectAll, handleSelectTask, openTaskForm}) => {
     const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
     
     useEffect(() => {
         // 모든 작업에 대해 선택 상태를 초기화합니다.

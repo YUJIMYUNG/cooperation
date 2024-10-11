@@ -58,8 +58,7 @@ public class ProjectService {
      */
     @Transactional(readOnly = true)
     public  ProjectDTO selectOne(Long idx){
-        Project project = projectRepository.findById(idx)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + idx));
+        Project project = projectFindById(idx);
         return convertToDTO(project);
     }
 
@@ -74,16 +73,15 @@ public class ProjectService {
             throw new IllegalArgumentException("로그인 정보가 잘못되었습니다.");
         }
 
-        Project project = projectRepository.findById(idx)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + idx));
+        Project project = projectFindById(idx);
+
         project.updateProject(dto.getTitle(), dto.getDescription(),dto.getStartDate(), dto.getEndDate());
         Project updatedProject = projectRepository.save(project);
         return convertToDTO(updatedProject);
     }
 
     public void delete(Long idx){
-        Project project = projectRepository.findById(idx)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + idx));
+        Project project = projectFindById(idx);
         projectRepository.deleteById(idx);
     }
 
@@ -118,5 +116,15 @@ public class ProjectService {
                 .startDate(projectDto.getStartDate())
                 .endDate(projectDto.getEndDate())
                 .build();
+    }
+
+    /**
+     * idx로 project찾기
+     * @param projectIdx
+     * @return
+     */
+    protected Project projectFindById(Long projectIdx){
+        return projectRepository.findById(projectIdx)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with idx: " + projectIdx));
     }
 }

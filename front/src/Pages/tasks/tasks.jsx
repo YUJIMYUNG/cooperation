@@ -12,7 +12,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import TasksFormModal from '../../components/modal/tasksFormModal';
 import DeleteConfirmModal from '../../components/modal/deleteConfirmModal';
 import { useDispatch } from 'react-redux';
-import { createTask, deleteTask, fetchTasks, updateTask } from '../../store/taskSlice';
+import { bulkDeleteTasks, createTask, deleteTask, fetchTasks, updateTask, updateTaskStatus } from '../../store/taskSlice';
 import { fetchProject, fetchProjects } from '../../store/projectSlice';
 
 
@@ -135,11 +135,10 @@ function Task() {
         if (!destination) {
             return;
         }
-
-        dispatch(updateTask({
+        dispatch(updateTaskStatus({
             projectIdx,
             taskIdx: draggableId,
-            updates: { status: destination.droppableId }
+            status: destination.droppableId
         }));
     }, []);
 
@@ -183,22 +182,23 @@ function Task() {
     };
 
 
-    // 작업 수정
+    // 작업 상태 수정
     const handleIndividualEdit = (task) => {
+        console.log("status update")
         dispatch(updateTask({ projectIdx, taskIdx: task.taskIdx, updates: task }));
         closeTaskForm();
     };
 
     // 작업 생성
     const handleSaveTask = (taskData) => {
-        console.log(taskData);
         dispatch(createTask({ projectIdx, dto: taskData }));
         closeTaskForm();
     };
 
     // 작업 수정
     const handUpdateTask = (idx, taskData) =>{
-        dispatch(updateTask(projectIdx, idx, taskData));
+        dispatch(updateTask({projectIdx, taskIdx: idx, updates: taskData}));
+        closeTaskForm();
     }
 
     // 삭제 모달 열기 (개별 삭제)
@@ -237,18 +237,17 @@ function Task() {
     // 작업 삭제 확인
     const confirmDelete = () => {
         if (isBulkDelete) {
-            Object.keys(selectedTasks).forEach(taskIdx => {
-                if (selectedTasks[taskIdx]) {
-                    dispatch(deleteTask({ projectIdx, taskIdx }));
-                }
-            });
+            const taskIdsToDelete = Object.keys(selectedTasks)
+                .filter(taskIdx => selectedTasks[taskIdx])
+                .map(Number);
+            dispatch(bulkDeleteTasks({ projectIdx, taskIdxs: taskIdsToDelete }));
             setSelectedTasks({});
         } else if (taskToDelete) {
-            dispatch(deleteTask({ projectIdx, taskIdx: taskToDelete.taskIdx }));
+            dispatch(deleteTask({ projectIdx, taskIdx: taskToDelete.idx }));
         }
         closeDeleteModal();
-
     };
+
     if (projectStatus === 'loading' || taskStatus === 'loading') {
         return <div>Loading...</div>;
     }
@@ -370,7 +369,7 @@ function Task() {
                 isOpen={isDeleteModalOpen}
                 onClose={closeDeleteModal}
                 onConfirm={confirmDelete}
-                name={isBulkDelete ? `${selectedCount}개의 작업` : (taskToDelete ? taskToDelete.taskName : '')}
+                name={isBulkDelete ? `${selectedCount}개의 작업` : (taskToDelete ? taskToDelete.name : '')}
             />
         </div>
 
