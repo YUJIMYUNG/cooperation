@@ -51,6 +51,7 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
     useEffect(() => {
         if (isEditing) {
             setFormData({
+                idx : task.idx || 1,
                 name: task.name || '',
                 description: task.description || '',
                 priority: task.priority || "LOW",

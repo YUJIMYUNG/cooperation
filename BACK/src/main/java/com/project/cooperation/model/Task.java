@@ -66,4 +66,9 @@ public class Task {
         this.assignedToIdx = assignedToIdx;
     }
 
+    //
+    public void updateTaskStatus(Status status){
+        this.status = status;
+    }
+
 }

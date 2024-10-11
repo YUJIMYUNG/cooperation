@@ -14,6 +14,7 @@ import com.project.cooperation.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
     private final HttpSession session;
 
     /**
@@ -53,8 +55,7 @@ public class TaskService {
      */
     @Transactional
     public TaskDTO createTask(Long projectIdx, TaskDTO dto) {
-        Project project = projectRepository.findById(projectIdx)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + projectIdx));
+        Project project = projectService.projectFindById(projectIdx);
 
         dto.setProjectIdx(projectIdx);
 
@@ -79,9 +80,9 @@ public class TaskService {
 /*        if(taskDTO.getIdx() != ((SessionDTO)session.getAttribute("user")).getUserIdx()){
             throw new IllegalArgumentException("로그인 정보가 잘못되었습니다.");
         }*/
+        Project project = projectService.projectFindById(projectIdx);
 
-        Task task = taskRepository.findById(taskIdx)
-                .orElseThrow(()->new EntityNotFoundException("Task not found with idx: " + taskIdx));
+        Task task = taskFindById(taskIdx);
 
         task.updateTask(
                 taskDTO.getName(), taskDTO.getDescription(), Priority.valueOf(taskDTO.getPriority()),
@@ -89,6 +90,34 @@ public class TaskService {
                 );
 
         return convertToDTO(taskRepository.save(task));
+
+    }
+    @Transactional
+    public  TaskDTO updateStatus(Long projectIdx, Long taskIdx, String status){
+        Project project = projectService.projectFindById(projectIdx);
+
+        Task task = taskFindById(taskIdx);
+
+        task.updateTaskStatus(Status.valueOf(status));
+
+        return convertToDTO(taskRepository.save(task));
+    }
+
+    @Transactional
+    public void deleteTask(Long projectIdx, Long taskIdx){
+        Project project = projectService.projectFindById(projectIdx);
+
+        Task task = taskFindById(taskIdx);
+
+        taskRepository.delete(task);
+    }
+
+    @Transactional
+    public void deleteTasks(Long projectIdx, List<Long> taskIdx){
+        Project project = projectService.projectFindById(projectIdx);
+        List<Task> tasks = taskRepository.findAllById(taskIdx).stream().toList();
+
+        taskRepository.deleteAllById(taskIdx);
     }
 
     private TaskDTO convertToDTO(Task task) {
@@ -129,6 +158,16 @@ public class TaskService {
                 .endDate(dto.getEndDate())
                 .assignedToIdx(dto.getAssignedToIdx())
                 .build();
+    }
+
+    /**
+     * idx로 task찾기
+     * @param taskIdx
+     * @return
+     */
+    protected Task taskFindById(Long taskIdx){
+        return taskRepository.findById(taskIdx)
+                .orElseThrow(()->new EntityNotFoundException("Task not found with idx: " + taskIdx));
     }
 }
 

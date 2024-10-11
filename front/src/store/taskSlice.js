@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LOCAL_HOST } from "../constant/path";
+import { Await } from "react-router-dom";
 
 // 에러 처리 헬퍼 함수
 const handleError = async (response) => {
@@ -51,6 +52,9 @@ const handleError = async (response) => {
   export const updateTask = createAsyncThunk(
     'tasks/updateTask',
     async ({ projectIdx, taskIdx, updates }, { rejectWithValue }) => {
+      console.log(projectIdx);
+      console.log(taskIdx);
+      console.log(updates);
       try {
         const response = await fetch(`${LOCAL_HOST}/api/projects/${projectIdx}/tasks/${taskIdx}`, {
           method: 'PUT',
@@ -63,8 +67,24 @@ const handleError = async (response) => {
       }
     }
   );
+
+  export const updateTaskStatus = createAsyncThunk(
+    'task/updateTaskStatus',
+    async({projectIdx, taskIdx, status}, { rejectWithValue }) => {
+      try{
+        const response = await fetch(`${LOCAL_HOST}/api/projects/${projectIdx}/tasks/${taskIdx}`,{
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(status)
+        });
+        return handleError(response);
+      }catch(err){
+        return rejectWithValue(err);
+      }
+    }
+  )
   
-  // 작업 삭제
+  // 작업 하나 삭제
   export const deleteTask = createAsyncThunk(
     'tasks/deleteTask',
     async ({ projectIdx, taskIdx }, { rejectWithValue }) => {
@@ -75,6 +95,27 @@ const handleError = async (response) => {
           throw errorData;
         }
         return taskIdx;
+      } catch (err) {
+        return rejectWithValue(err);
+      }
+    }
+  );
+
+  // 작업 여러개 삭제
+  export const bulkDeleteTasks = createAsyncThunk(
+    'tasks/bulkDeleteTasks',
+    async ({ projectIdx, taskIdxs }, { rejectWithValue }) => {
+      try {
+        const response = await fetch(`${LOCAL_HOST}/api/projects/${projectIdx}/tasks/bulk`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(taskIdxs)
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw errorData;
+        }
+        return taskIdxs;
       } catch (err) {
         return rejectWithValue(err);
       }
@@ -118,8 +159,17 @@ const handleError = async (response) => {
             state.list[index] = action.payload;
           }
         })
+        .addCase(updateTaskStatus.fulfilled, (state, action) => {
+          const index = state.list.findIndex(task => task.idx === action.payload.idx);
+          if(index !== -1){
+            state.list[index] = action
+          } 
+        })
         .addCase(deleteTask.fulfilled, (state, action) => {
           state.list = state.list.filter(task => task.idx !== action.payload);
+        })
+        .addCase(bulkDeleteTasks.fulfilled, (state, action) => {
+          state.list = state.list.filter(task => !action.payload.includes(task.idx));
         })
         // 모든 실패 케이스에 대한 공통 처리
         .addMatcher(
