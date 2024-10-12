@@ -46,11 +46,13 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(session.getAttribute(
                 "user"
         ));
+        log.info("sessionId : {}", session.getId());
 
         Gson gson = new Gson();
 
         String jsonStr = gson.toJson(sessionDTO);
         log.info(jsonStr);
+        response.setStatus(HttpServletResponse.SC_OK);
 
         response.setContentType("application/json; charset=UTF-8");
 
