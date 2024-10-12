@@ -6,6 +6,7 @@ import ProjectBlock from "../../components/projects/projectBlock";
 import BodyHeader from "../../components/header/bodyHeader";
 import Search from "../../atom/search";
 import { fetchProjects, deleteProject, setCurrentPage, clearError } from "../../store/projectSlice";
+import Spinner from "../../atom/Spinner";
 
 export default function ProjectPage() {
     const navigate = useNavigate();
@@ -52,9 +53,7 @@ export default function ProjectPage() {
     const handlePageChange = (newPage) => {
         dispatch(setCurrentPage(newPage));
     }
-    
-    if (status === 'loading') return <div>Loading...</div>;
-    if (status === 'failed') return <div>Error: {error}</div>;
+
 
     return (
         <div className="w-11/12 mx-auto">
@@ -75,6 +74,7 @@ export default function ProjectPage() {
                 <p className="col-span-2">마감 날짜</p>
                 <p className="col-span-1">추가 작업</p>
             </div>
+            {status === 'loading' ? <Spinner size="xl" color="yellow" /> : null}
             <div>
                 {projects && projects.map((project, i) => (
                     <ProjectBlock 
@@ -82,7 +82,7 @@ export default function ProjectPage() {
                         title={project?.title}
                         idx={project?.idx}
                         description={project?.description}
-                        author={project?.author}
+                        author={project?.nickname}
                         startDate={project?.startDate}
                         endDate={project?.endDate}
                         onEdit={() => editProjectHandler(project.idx)}
