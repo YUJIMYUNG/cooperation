@@ -6,7 +6,7 @@ import ProjectBlock from "../../components/projects/projectBlock";
 import BodyHeader from "../../components/header/bodyHeader";
 import Search from "../../atom/search";
 import { fetchProjects, deleteProject, setCurrentPage, clearError } from "../../store/projectSlice";
-import Spinner from "../../atom/Spinner";
+import Spinner from "../../atom/spinner";
 
 export default function ProjectPage() {
     const navigate = useNavigate();
