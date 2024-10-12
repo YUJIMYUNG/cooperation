@@ -13,7 +13,8 @@ const userMiddleware = store => next => async action => {
             const response = await fetch(`${LOCAL_HOST}/api/auth/validate`,{
                 method : 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body : action.payload
+                body : action.payload,
+                credentials: 'include'
             });
 
             const data = await response.json();

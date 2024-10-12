@@ -15,8 +15,8 @@ public class AuthService {
 
     public SessionDTO validate(Long idx){
         //1. 컨트롤러랑 연결(idx)
-        log.info("{}",session.getAttribute("user"));
         SessionDTO getSessionMemberInfo = (SessionDTO) session.getAttribute("user");
+        log.info("{}",session.getAttribute("user"));
         //2.
         if(!getSessionMemberInfo.getUserIdx().equals(idx)){
             session.removeAttribute("user");
