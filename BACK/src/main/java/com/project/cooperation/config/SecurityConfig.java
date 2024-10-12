@@ -82,6 +82,7 @@ public class SecurityConfig {
         corsConfiguration.setAllowedHeaders(List.of("*")); // 모든 헤더를 허락함
         corsConfiguration.setAllowCredentials(true); // 쿠키 포함 요청 여부 - 허락
 
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration); // 모든 경로에 대해서 CORS 설정을 적용
 

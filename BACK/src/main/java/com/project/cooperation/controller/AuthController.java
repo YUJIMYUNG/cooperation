@@ -19,13 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final HttpSession session;
     private final AuthService authService;
     private final BCryptPasswordEncoder passwordEncoder;
 
     //프론트에서 받아온 로그인 정보를 Session과 비교하는 작업
     @PostMapping("/validate")
-    public ResponseEntity<?> validate(@Valid @RequestBody Long idx){
+    public ResponseEntity<?> validate(@RequestBody Long idx){
         log.info("idx : {}",idx);
         return ResponseEntity.status(HttpStatus.OK).body(authService.validate(idx));
     }

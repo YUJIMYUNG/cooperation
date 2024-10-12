@@ -14,16 +14,18 @@ const userMiddleware = store => next => async action => {
                 method : 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body : action.payload,
-                credentials: 'include'
+                credentials: 'include' // 쿠키 포함
+
             });
 
             const data = await response.json();
+            console.log(data);
 
             //받아온 유저 정보를 상태와 localStorage에 저장
             store.dispatch(setUser({
                 userIdx : data.userIdx,
                 nickname: data.nickname,
-                email: data.emial,
+                email: data.email,
                 userId: data.id,
                 color: data.color
             }));

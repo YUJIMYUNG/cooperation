@@ -6,7 +6,7 @@ import ProjectBlock from "../../components/projects/projectBlock";
 import BodyHeader from "../../components/header/bodyHeader";
 import Search from "../../atom/search";
 import { fetchProjects, deleteProject, setCurrentPage, clearError } from "../../store/projectSlice";
-import Spinner from "../../atom/spinner";
+// import Spinner from "../../atom/Spinner";
 
 export default function ProjectPage() {
     const navigate = useNavigate();
@@ -74,7 +74,7 @@ export default function ProjectPage() {
                 <p className="col-span-2">마감 날짜</p>
                 <p className="col-span-1">추가 작업</p>
             </div>
-            {status === 'loading' ? <Spinner size="xl" color="yellow" /> : null}
+            {/* {status === 'loading' ? <Spinner size="xl" color="yellow" /> : null} */}
             <div>
                 {projects && projects.map((project, i) => (
                     <ProjectBlock 

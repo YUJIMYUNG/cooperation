@@ -88,7 +88,7 @@ const Layout = () => {
             method : 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body : formData.toString(),
-            credentials: 'include'
+            credentials: 'include' // 쿠키 포함
         })
         
         //백에서 json으로 받은 객체 불러오기
