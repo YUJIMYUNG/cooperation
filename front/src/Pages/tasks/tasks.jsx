@@ -12,7 +12,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import TasksFormModal from '../../components/modal/tasksFormModal';
 import DeleteConfirmModal from '../../components/modal/deleteConfirmModal';
 import { useDispatch } from 'react-redux';
-import { bulkDeleteTasks, createTask, deleteTask, fetchTasks, updateTask, updateTaskStatus } from '../../store/taskSlice';
+import { bulkDeleteTasks, createTask, deleteTask, fetchTasks, updateLocalTasks, updateTask, updateTaskStatus } from '../../store/taskSlice';
 import { fetchProject, fetchProjects } from '../../store/projectSlice';
 
 
@@ -131,16 +131,32 @@ function Task() {
 
     const onDragEnd = useCallback((result) => {
         const { source, destination, draggableId } = result;
-
+    
         if (!destination) {
             return;
         }
+    
+        // 로컬 상태 즉시 업데이트
+        const updatedTasks = tasks.map(task => 
+            task.idx.toString() === draggableId 
+                ? { ...task, status: destination.droppableId }
+                : task
+        );
+    
+        // Redux 상태 업데이트
+        dispatch(updateLocalTasks(updatedTasks));
+    
+        // 서버에 상태 업데이트 요청
         dispatch(updateTaskStatus({
             projectIdx,
             taskIdx: draggableId,
             status: destination.droppableId
-        }));
-    }, []);
+        })).catch(error => {
+            console.error("Failed to update task status:", error);
+            // 에러 발생 시 원래 상태로 되돌리기
+            dispatch(fetchTasks(projectIdx));
+        });
+    }, [dispatch, projectIdx, tasks]);
 
     const renderDraggableTask = useCallback((task, index) => (
         <Draggable key={task.idx.toString()} draggableId={task.idx.toString()} index={index}>
@@ -173,7 +189,7 @@ function Task() {
     // TasksFormModal 닫기 함수
     const closeTaskForm = () => {
         setIsTaskFormOpen(false);
-        setEditingTask(null);
+        setEditingTask(null);   
     };
 
     // 작업 생성 버튼 핸들러

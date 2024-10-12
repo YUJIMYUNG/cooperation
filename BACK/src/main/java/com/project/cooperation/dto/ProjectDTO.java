@@ -32,4 +32,6 @@ public class ProjectDTO {
 
     @NotNull(message = "마감일은 필수입니다.")
     private LocalDate endDate;
+
+    private String nickname;
 }

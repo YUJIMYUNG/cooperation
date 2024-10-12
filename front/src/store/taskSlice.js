@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { LOCAL_HOST } from "../constant/path";
-import { Await } from "react-router-dom";
 
 // 에러 처리 헬퍼 함수
 const handleError = async (response) => {
@@ -52,9 +51,6 @@ const handleError = async (response) => {
   export const updateTask = createAsyncThunk(
     'tasks/updateTask',
     async ({ projectIdx, taskIdx, updates }, { rejectWithValue }) => {
-      console.log(projectIdx);
-      console.log(taskIdx);
-      console.log(updates);
       try {
         const response = await fetch(`${LOCAL_HOST}/api/projects/${projectIdx}/tasks/${taskIdx}`, {
           method: 'PUT',
@@ -136,7 +132,10 @@ const handleError = async (response) => {
         state.error = null;
         state.errorMessage = null;
         state.fieldErrors = {};
-      }
+      },
+      updateLocalTasks: (state, action) => {
+        state.list = action.payload;
+      },
     },
     extraReducers: (builder) => {
       builder
@@ -161,9 +160,9 @@ const handleError = async (response) => {
         })
         .addCase(updateTaskStatus.fulfilled, (state, action) => {
           const index = state.list.findIndex(task => task.idx === action.payload.idx);
-          if(index !== -1){
-            state.list[index] = action
-          } 
+          if (index !== -1) {
+            state.list[index] = action.payload;
+          }
         })
         .addCase(deleteTask.fulfilled, (state, action) => {
           state.list = state.list.filter(task => task.idx !== action.payload);
@@ -198,6 +197,6 @@ const handleError = async (response) => {
     }
   });
   
-  export const { clearError } = taskSlice.actions;
+  export const { clearError, updateLocalTasks } = taskSlice.actions;
   
   export default taskSlice.reducer;

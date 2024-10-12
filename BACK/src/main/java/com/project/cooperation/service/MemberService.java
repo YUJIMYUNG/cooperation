@@ -80,6 +80,12 @@ public class MemberService{
                 .orElseThrow(() -> new EntityNotFoundException("Member not found witd idx" + idx));
         return convertToDTO(member);
     }
+    
+    // idx로 멤버 조회
+    public Member getMemberByIdx(Long idx){
+        return memberRepository.findById(idx)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found witd idx" + idx));
+    }
 
 
 

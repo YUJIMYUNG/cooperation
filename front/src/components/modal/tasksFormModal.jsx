@@ -49,7 +49,7 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
     }, [formData, task, isEditing]);
 
     useEffect(() => {
-        if (isEditing) {
+        if (isEditing && task) {
             setFormData({
                 idx : task.idx || 1,
                 name: task.name || '',
@@ -62,6 +62,7 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
             });
         } else {
             setFormData(initialFormData);
+            resetForm();
         }
     }, [task, isEditing]);
 
@@ -83,11 +84,18 @@ const TasksFormModal = ({ task, isOpen, onClose, onCreate, onUpdate }) => {
         
     };
 
+    const resetForm = () => {
+        setFormData(initialFormData);
+        setIsSubmitting(false);
+    };
+
+
     const handleCancelClick = () => {
         onClose();
         if (!isEditing) {
             setFormData(initialFormData);
         }
+        resetForm();
     };
 
     if (!isOpen) return null;

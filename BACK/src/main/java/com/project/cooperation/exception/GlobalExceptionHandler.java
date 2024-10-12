@@ -51,4 +51,11 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("Bad Request", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException ex){
+        ErrorResponse errorResponse = new ErrorResponse("UnAuthorized", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
 }

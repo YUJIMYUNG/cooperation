@@ -98,7 +98,9 @@ public class TaskService {
 
         Task task = taskFindById(taskIdx);
 
-        task.updateTaskStatus(Status.valueOf(status));
+        String cleanStatus = status.replaceAll("\"", "").trim().toUpperCase();
+
+        task.updateTaskStatus(Status.valueOf(cleanStatus.toUpperCase()));
 
         return convertToDTO(taskRepository.save(task));
     }
