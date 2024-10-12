@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 하단에서 정의한 cors를 설정함
                 .formLogin(config ->{
-                    config.loginPage("/api/member/login");//로그인페이지
+                    config.loginPage("/api/auth/login");//로그인페이지
                     config.usernameParameter("id");
                     config.passwordParameter("password");
                     config.successHandler(new APILoginSuccessHandler());//성공하면 동작하게 하는 기능
@@ -49,7 +49,7 @@ public class SecurityConfig {
                 //인증, 인가가 필요한 URL 지정
                 .authorizeHttpRequests(authorizeReqeust ->
                         authorizeReqeust
-                                .requestMatchers( "/api/user/**").authenticated()//인증 된 사용자는 projects, user 에 접근 가능
+                                .requestMatchers( "/api/member/**").authenticated()//인증 된 사용자는 projects, user 에 접근 가능
                                 .requestMatchers("/api/projects/**","/api/auth/**").permitAll()//모든 사용자가 접근 가능
                         )
                 .headers(

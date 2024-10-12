@@ -32,6 +32,7 @@ public class UserController {
     }
 
     //회원정보 조회
+    //
     @GetMapping("/{idx}")
     public ResponseEntity<SessionDTO> selectMemberByIdx(
             @PathVariable Long idx){

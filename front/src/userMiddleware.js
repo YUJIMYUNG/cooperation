@@ -9,8 +9,13 @@ const userMiddleware = store => next => async action => {
         console.log(action.payload)
         try {
             // 유저 정보를 백엔드에서 받아오기
-            
-            const response = await fetch(`${LOCAL_HOST}/api/member/${action.payload}`);
+            // 유호성 검사
+            const response = await fetch(`${LOCAL_HOST}/api/auth/validate`,{
+                method : 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body : action.payload
+            });
+
             const data = await response.json();
 
             //받아온 유저 정보를 상태와 localStorage에 저장

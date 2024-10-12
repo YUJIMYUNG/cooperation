@@ -84,7 +84,7 @@ const Layout = () => {
 
         //백으로 로그인 정보 보내주기
         console.log(formData);
-        const response = await fetch(`${LOCAL_HOST}/api/member/login`,{
+        const response = await fetch(`${LOCAL_HOST}/api/auth/login`,{
             method : 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body : formData.toString()
