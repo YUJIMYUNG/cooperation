@@ -28,42 +28,42 @@ const Layout = () => {
   const dispatch = useDispatch();
   const {idx, nickname, email, id, color} = useSelector((state) => state.members)
   const [isLogingIn, setIsLogingIn] = useState(false) //로그인 진행 중 상태
-  
+
+
+    //local Storage 사용안함 -> 우리는 백에서 session으로 정보를 담고 쿠키로 보내줌
+    //어차피 쿠키로 들어오기때문에 local Storage로 한 번 더 주고받아 비교 할 필요가 없어진다는 뜻!
+
+    //(새로고침할때) 쿠키에 담긴 user정보를 프론트로 가져오게 로직을 짜야함
     useEffect(() => {
       const handleStorageChange = (e) => {
         //localStorage에 값이 삭제되면 모달창 다시 띄움
         if(e.key === "user" && !e.newValue){
           setModalOpen(true);
-        }
-
-        
+        }       
       }
-      
-      console.log(localStorage.getItem("user"));
+
+      dispatch({type : 'FETCH_USER_INFO'})
       
       //local storage에 값이 있냐없냐 여부를 확인하고
-      if(localStorage.getItem("user")){
-        console.log(3)
+      if(idx){
+        console.log(idx);
         setModalOpen(false);
         
-        //localStorage에 값이 있으면 값을 저장
-        const storedUser = JSON.parse(localStorage.getItem('user'));
-            if(storedUser) {
-                dispatch({type : 'FETCH_USER_INFO', payload: storedUser.userIdx})
-            }
-        //dispatch(setUser(JSON.parse(localStorage.getItem("user"))))
-      }else{
+        const storedUser = idx;
+        if(storedUser) {
+          
+        } 
+      } else{
         setModalOpen(true);
       }
+
+ 
 
       //storage 이벤트 리스너 추가 - 다른 탭에서도 storage가 변경됨을 바로 감지
       window.addEventListener("storage", handleStorageChange);
 
-      //컴포넌트 언마운트시 리스너 제거 - 메모리 누수 방지
-      return () => {
-        window.removeEventListener("storage", handleStorageChange);
-      }
-    },[dispatch]);
+
+    },[dispatch,idx]);
 
     //모달창 띄우는 함수
     const handleModal = () => {
@@ -93,7 +93,7 @@ const Layout = () => {
         
         //백에서 json으로 받은 객체 불러오기
         const data = await response.json();
-        console.log(data.nickname)
+        console.log(data)
 
         if(!data.nickname && !data.email && !data.idx){
           console.log(2);

@@ -11,27 +11,22 @@ const userMiddleware = store => next => async action => {
             // 유저 정보를 백엔드에서 받아오기
             // 유호성 검사
             const response = await fetch(`${LOCAL_HOST}/api/auth/validate`,{
-                method : 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body : action.payload,
                 credentials: 'include' // 쿠키 포함
-
             });
 
+      // 응답 상태 확인
+            if (!response.ok) {
+                const errorText = await response.text(); // 에러 메시지 확인
+                throw new Error(`유효하지 않은 응답입니다: ${errorText}`);
+            }
+        
             const data = await response.json();
-            console.log(data);
-
-            //받아온 유저 정보를 상태와 localStorage에 저장
             store.dispatch(setUser({
-                userIdx : data.userIdx,
+                userIdx: data.userIdx,
                 nickname: data.nickname,
                 email: data.email,
                 userId: data.id,
-                color: data.color
-            }));
-        
-        // localStorage에 유저 데이터를 저장(로그인 상태 유지용)
-        localStorage.setItem('user', JSON.stringify(data));
+                color:data.color}))
         
         } catch (error) {
         console.error('error fetcing user info', error);

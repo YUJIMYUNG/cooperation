@@ -13,23 +13,12 @@ import java.util.Collections;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthService {
-    private final HttpSession session;
 
-    public SessionDTO validate(Long idx){
+    public SessionDTO validate(HttpSession session){
         //1. 컨트롤러랑 연결(idx)
 
-        log.info("Received idx: {}", idx);
-        log.info("Current session: {}", session.getId());
-        log.info("Session attributes: {}", session.getAttributeNames());
-        log.info("All session attributes: {}", Collections.list(session.getAttributeNames()));
 
-        SessionDTO getSessionMemberInfo = (SessionDTO) session.getAttribute("user");
-        log.info("{}",session.getAttribute("user"));
-        //2.
-        if(!getSessionMemberInfo.getUserIdx().equals(idx)){
-            session.removeAttribute("user");
-        }
-        return getSessionMemberInfo;
+        return (SessionDTO) session.getAttribute("user");
     }
 
 }
