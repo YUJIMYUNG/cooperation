@@ -22,13 +22,14 @@ public class UserController {
     MemberService memberService;
     HttpSession session;
 
-    //닉네임 수정
+    //회원정보 수정
     @PutMapping("/{idx}")
     public ResponseEntity<SessionDTO> nicknameModify(
             @PathVariable Long idx,
-            @RequestBody String nickname){
+            @RequestBody String nickname,
+            @RequestBody String color){
         log.info("start");
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMemberInfo(idx, nickname));
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMemberInfo(idx, nickname, color));
     }
 
     //회원정보 조회

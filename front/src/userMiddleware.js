@@ -3,7 +3,7 @@ import { LOCAL_HOST } from './constant/path';
 import { setUser, clearUser } from './store/memberLoginSlice';
 
 // FETCH_USER_INFO 액션이 디스패치되면 서버로부터 유저 정보를 비동기적으로 가져옴
-// 가져온 유저 정보를 Redux상태와 localSorage에 저장
+// 가져온 유저 정보를 Redux상태에 저장
 const userMiddleware = store => next => async action => {
     if (action.type === 'FETCH_USER_INFO'){
         console.log(action.payload)

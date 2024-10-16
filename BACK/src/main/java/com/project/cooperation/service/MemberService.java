@@ -28,11 +28,6 @@ public class MemberService{
         return memberRepository.existsById(id);
     }
 
-    //회원가입 메서드
-//    public void join(JoinRequest joinRequest){
-//        memberRepository.save(joinRequest.toEntity());
-//    }
-
     //BCryptPasswordEncoder를 통해서 암호화 작업을 추가한 회원가입 메서드
     public void securityJoin(JoinRequest joinRequest){
         if(memberRepository.existsById(joinRequest.getId())){
@@ -42,21 +37,6 @@ public class MemberService{
         joinRequest.setPassword(bCryptPasswordEncoder.encode(joinRequest.getPassword()));
 
         memberRepository.save(joinRequest.toEntity());
-    }
-
-    //로그인 메서드
-    public Member login(LoginRequest loginRequest) {
-        Member findMember = memberRepository.findById(loginRequest.getId());
-
-        if(findMember == null) {
-            return null;
-        }
-
-        if(!findMember.getPassword().equals(loginRequest.getPassword())) {
-            return null;
-        }
-
-        return findMember;
     }
 
 
@@ -69,8 +49,7 @@ public class MemberService{
     }
 
     //회원정보 변경
-    public SessionDTO updateMemberInfo(Long idx, String nickname){
-
+    public SessionDTO updateMemberInfo(Long idx, String nickname, String color){
         return null;
     }
 
