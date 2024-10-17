@@ -50,20 +50,31 @@ public class MemberService{
 
     //회원정보 변경
     public SessionDTO updateMemberInfo(Long idx, String nickname, String color){
-        return null;
+        Member member = memberRepository.findById(idx)
+                .orElseThrow(()-> new EntityNotFoundException("Member not found witd idx" + idx));
+
+        member.updateInfo(nickname, color);
+
+        return SessionDTO.builder()
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .userIdx(member.getIdx())
+                .color(member.getColor())
+                .id(member.getId())
+                .build();
     }
 
     //회원정보 조회
     public SessionDTO selectMemberById(Long idx){
         Member member = memberRepository.findById(idx)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found witd idx" + idx));
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with idx" + idx));
         return convertToDTO(member);
     }
     
     // idx로 멤버 조회
     public Member getMemberByIdx(Long idx){
         return memberRepository.findById(idx)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found witd idx" + idx));
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with idx" + idx));
     }
 
 

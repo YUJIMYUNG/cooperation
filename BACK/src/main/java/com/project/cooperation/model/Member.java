@@ -38,13 +38,12 @@ public class Member {
     @Column(name = "member_color", nullable = false)
     private String color;
 
-//    @ElementCollection(fetch = FetchType.LAZY)
-//    @Builder.Default
-//    @Enumerated(EnumType.STRING)
-//    private List<Role> memberRoleList = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
+    //회원정보 업데이트 메서드
+    public void updateInfo(String nickname, String color){
+        this.nickname = nickname;
+        this.color = color;
+    }
 }

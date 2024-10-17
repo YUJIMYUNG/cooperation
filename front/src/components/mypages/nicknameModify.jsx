@@ -5,18 +5,18 @@ import Button from "../../atom/button";
 import { LOCAL_HOST } from "../../constant/path";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { updateUserInfo } from "../../store/memberLoginSlice";
 import { updateUser } from "../../store/memberLoginSlice";
 
 const NicknameModify = () => {
   const dispatch = useDispatch();
-  const { idx, nickname, email, id, color } = useSelector(
+  const { idx, nickname, email, id, color, status, error } = useSelector(
     (state) => state.members
   );
-  const [updateNickname, setUpdateNickname] = useState(nickname); //수정할 닉네임
+  const [updateNickname, setUpdateNickname] = useState(""); //수정할 닉네임
   const [errorMessage, setErrorMessage] = useState(""); //에러 메세지
   const [selectedColor, setSelectedColor] = useState(color); //선택(수정)한 userIcon색상
   const [showColorPicker, setShowColorPicker] = useState(false); //선택 색상 메뉴
-  const [loading, setLoading] = useState(true);
 
   const userNicknameRegex = /^[a-zA-Z가-힣0-9]{1,10}$/; //닉네임 유효성 검사 : 영어 대소문자, 한글, 10자이내
   const colorOptions = {
@@ -31,14 +31,21 @@ const NicknameModify = () => {
     gray: "bg-gray-200 text-gray-600",
   };
 
+  //닉네임 값이 변결될 때마다 updateNickname을 업데이트
+  useEffect(() => {
+    setUpdateNickname(nickname);
+  }, [nickname, color]);
+
   //닉네임 유효성 검사
   const validNickname = () => {
     if (!userNicknameRegex.test(updateNickname)) {
       setErrorMessage(
         "닉네임은 영어 대소문자, 숫자, 한글 10자 이내로 입력해야 합니다."
       );
+      return false;
     } else {
       setErrorMessage("");
+      return true;
     }
   };
 
@@ -49,31 +56,31 @@ const NicknameModify = () => {
   };
 
   //nickname, color를 update(수정)하는 정보를 담아 백으로 보내주는 함수
-  const updateUserInfo = async () => {
-    try {
-      const formData = new URLSearchParams();
-      formData.append("nickname", updateNickname);
-      formData.append("color", selectedColor);
+  // const updateUserInfo = async () => {
+  //   try {
+  //     const formData = new URLSearchParams();
+  //     formData.append("nickname", updateNickname);
+  //     formData.append("color", selectedColor);
 
-      //백으로 수정한 정보 보내기
-      const response = await fetch(`${LOCAL_HOST}/api/member/${idx}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
-        credentials: "include",
-      });
+  //     //백으로 수정한 정보 보내기
+  //     const response = await fetch(`${LOCAL_HOST}/api/member/${idx}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  //       body: formData.toString(),
+  //       credentials: "include",
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Failed to update user information");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to update user information");
+  //     }
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error updating user info:", error);
-      throw error;
-    }
-  };
+  //     const data = await response.json();
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Error updating user info:", error);
+  //     throw error;
+  //   }
+  // };
 
   //update된 정보를 submit하는 함수
   const handleSubmit = async (e) => {
@@ -83,19 +90,23 @@ const NicknameModify = () => {
     //validNickname()에 값이 있다면 프로필 업데이트해라
     if (validNickname()) {
       try {
-        const updateData = await updateUserInfo();
-        dispatch(
-          updateUser({
-            nickname: updateData.nickname,
-            color: updateData.color,
+        await dispatch(
+          updateUserInfo({
+            idx,
+            nickname: updateNickname,
+            color: selectedColor,
           })
-        );
+        ).unwrap();
         alert("회원 정보가 성공적으로 업데이트되었습니다.");
       } catch (error) {
         alert("회원 정보 업데이트에 실패했습니다. 다시 시도해주세요.");
       }
     }
   };
+
+  if (status === "loading") {
+    return <div>업데이트 중...</div>;
+  }
 
   return (
     <div className="w-600 h-800 m-auto place-content-center">
@@ -167,10 +178,15 @@ const NicknameModify = () => {
 
           {/* 회원정보 업데이트 버튼 */}
           <div className="flex justify-center mt-4">
-            <Button text={"수정하기"} type={"submit"}></Button>
+            <Button
+              text={"수정하기"}
+              type={"submit"}
+              disabled={status === "loading"}
+            />
           </div>
         </div>
       </form>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 };
